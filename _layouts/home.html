@@ -4,23 +4,46 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{ site.title }}</title>
-	<link rel="stylesheet" href="/assets/main.css">
+	<link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
 </head>
 <body>
 	{% include header.html %}
 	<main class="main-content">
-		<section class="news-list">
-			<h1>Latest News</h1>
-			{% for post in site.posts %}
-				<article class="news-item">
-					{% if post.image %}
-						<img src="{{ post.image }}" alt="{{ post.title }}" class="news-thumb">
-					{% else %}
-						<img src="/assets/default-news.jpg" alt="News" class="news-thumb">
+		<div class="news-layout">
+			<!-- Main Featured Article -->
+			<section class="featured-article">
+				{% assign featured_post = site.posts.first %}
+				<article class="main-story">
+					<h1><a href="{{ featured_post.url }}">{{ featured_post.title }}</a></h1>
+					<p class="story-meta">{{ featured_post.date | date: "%B %d, %Y" }}</p>
+					{% if featured_post.image %}
+						<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image">
 					{% endif %}
+					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 300 }}</p>
+				</article>
+			</section>
+
+			<!-- Trending Sidebar -->
+			<aside class="trending-sidebar">
+                {% assign all_posts_except_first = site.posts | offset: 1 %}
+                {% assign trending_posts = all_posts_except_first | sample: 3 %}
+                {% for post in trending_posts %}
+                    <article class="trending-item">
+                        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+                        <p class="trending-meta">{{ post.date | date: "%b %d" }}</p>
+                    </article>
+                {% endfor %}
+            </aside>
+		</div>
+
+		<!-- More Stories Section -->
+		<section class="more-stories">
+			{% assign more_posts = site.posts | offset: 4 %}
+			{% for post in more_posts %}
+				<article class="story-item">
 					<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-					<p class="news-meta">{{ post.date | date: "%B %d, %Y" }}</p>
-					<p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+					<p class="story-meta">{{ post.date | date: "%B %d, %Y" }}</p>
+					<p>{{ post.excerpt | strip_html | truncate: 150 }}</p>
 				</article>
 			{% endfor %}
 		</section>
