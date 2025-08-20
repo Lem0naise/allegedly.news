@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ site.title }}</title>
+	<link rel="stylesheet" href="/assets/main.css">
+</head>
+<body>
+	{% include header.html %}
+	<main class="main-content">
+		<section class="news-list">
+			<h1>Latest News</h1>
+			{% for post in site.posts %}
+				<article class="news-item">
+					{% if post.image %}
+						<img src="{{ post.image }}" alt="{{ post.title }}" class="news-thumb">
+					{% else %}
+						<img src="/assets/default-news.jpg" alt="News" class="news-thumb">
+					{% endif %}
+					<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+					<p class="news-meta">{{ post.date | date: "%B %d, %Y" }}</p>
+					<p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+				</article>
+			{% endfor %}
+		</section>
+	</main>
+	{% include footer.html %}
+</body>
+</html>

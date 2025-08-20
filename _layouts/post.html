@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ page.title }} | {{ site.title }}</title>
+    <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+</head>
+<body>
+	{% include header.html %}
+	<main class="main-content">
+		<article class="post">
+			<h1>{{ page.title }}</h1>
+			<p class="post-meta">Published {{ page.date | date: "%B %d, %Y" }}</p>
+			{% if page.image %}
+				<img src="{{ page.image }}" alt="{{ page.title }}" class="post-image">
+			{% endif %}
+			<div class="post-content">
+				{{ content }}
+			</div>
+		</article>
+	</main>
+	{% include footer.html %}
+</body>
+</html>
