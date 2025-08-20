@@ -47,19 +47,19 @@ body {
 // Header Styles
 .site-header {
   background: var(--background-color);
-  border-bottom: 4px solid var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
   
   .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 20px;
+    padding: 1rem 20px;
   }
 }
 
 .site-title {
   font-family: var(--font-main);
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 900;
   color: var(--accent-color);
   text-decoration: none;
@@ -75,14 +75,14 @@ body {
   ul {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 1.5rem;
     
     li a {
       color: var(--primary-color);
       text-decoration: none;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
       border: 2px solid var(--primary-color);
       text-transform: uppercase;
       
@@ -98,25 +98,93 @@ body {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 20px;
+  padding: 1.5rem 20px;
 }
 
-// News Layout
-.news-layout {
+// Newspaper Layout
+.newspaper-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 2rem;
   margin-bottom: 3rem;
   border-bottom: 3px solid var(--primary-color);
   padding-bottom: 2rem;
+  align-items: start;
+}
+
+// Side Cards
+.side-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  .side-card {
+    border: 2px solid var(--primary-color);
+    background: var(--background-color);
+    overflow: hidden;
+    
+    .card-image, .card-image-placeholder {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .card-image-placeholder {
+      background: var(--light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      
+      &::before {
+        content: "No Image";
+      }
+    }
+    
+    .card-content {
+      padding: 1rem;
+      
+      h3 {
+        font-family: var(--font-main);
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+        
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+          
+          &:hover {
+            color: var(--accent-color);
+          }
+        }
+      }
+      
+      .card-meta {
+        font-family: var(--font-meta);
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
 }
 
 // Featured Article
 .featured-article {
   .main-story {
+    text-align: center;
+    
     h1 {
       font-family: var(--font-main);
-      font-size: 4rem;
+      font-size: 3.5rem;
       font-weight: 900;
       line-height: 0.9;
       color: var(--primary-color);
@@ -129,7 +197,7 @@ body {
         text-decoration: none;
         
         &:hover {
-          color: var(--primary-color);
+          color: var(--accent-color);
         }
       }
     }
@@ -146,83 +214,45 @@ body {
     
     .story-image {
       width: 100%;
-      height: 300px;
+      height: 250px;
       object-fit: cover;
       margin-bottom: 1.5rem;
       border: 2px solid var(--primary-color);
     }
     
     .story-excerpt {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       line-height: 1.5;
       color: var(--secondary-color);
       font-weight: 400;
+      text-align: left;
     }
   }
 }
 
-// Trending Sidebar
-.trending-sidebar {
-  border-left: 3px solid var(--primary-color);
-  padding-left: 2rem;
+// Newspaper Columns
+.newspaper-columns {
+  margin-top: 2rem;
   
-  h2 {
-    font-family: var(--font-main);
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 0.5rem;
+  .columns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    column-gap: 3rem;
   }
   
-  .trending-item {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--medium-gray);
-    padding-bottom: 1.5rem;
-    
-    h3 {
-      font-family: var(--font-main);
-      font-size: 1.5rem;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-      
-      a {
-        color: var(--primary-color);
-        text-decoration: none;
-        
-        &:hover {
-          color: var(--primary-color);
-        }
-      }
-    }
-    
-    .trending-meta {
-      font-family: var(--font-meta);
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-  }
-}
-
-// More Stories Section
-.more-stories {
-  .story-item {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 2px solid var(--medium-gray);
+  .column-story {
+    border: 1px solid var(--medium-gray);
+    padding: 1.5rem;
+    background: var(--background-color);
+    break-inside: avoid;
+    margin-bottom: 1rem;
     
     h2 {
       font-family: var(--font-main);
-      font-size: 2.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.2;
       margin-bottom: 0.75rem;
       color: var(--primary-color);
       
@@ -231,24 +261,24 @@ body {
         text-decoration: none;
         
         &:hover {
-          color: var(--primary-color);
+          color: var(--accent-color);
         }
       }
     }
     
-    .story-meta {
+    .column-meta {
       font-family: var(--font-meta);
       color: var(--text-muted);
-      font-weight: 700;
+      font-weight: 600;
       margin-bottom: 1rem;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
-    p:not(.story-meta) {
-      font-size: 1.1rem;
-      line-height: 1.5;
+    .column-excerpt {
+      font-size: 0.95rem;
+      line-height: 1.4;
       color: var(--secondary-color);
     }
   }
@@ -411,7 +441,7 @@ body {
   }
   
   .site-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   
   .site-nav ul {
@@ -420,37 +450,63 @@ body {
     justify-content: center;
     
     li a {
-      padding: 0.3rem 0.8rem;
-      font-size: 0.9rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
     }
   }
   
-  .news-layout {
+  .newspaper-layout {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
   
-  .trending-sidebar {
-    border-left: none;
-    border-top: 3px solid var(--primary-color);
-    padding-left: 0;
-    padding-top: 2rem;
+  .side-cards {
+    order: 1;
+    flex-direction: row;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    
+    .side-card {
+      flex: 0 0 200px;
+      
+      .card-image, .card-image-placeholder {
+        height: 100px;
+      }
+      
+      .card-content {
+        padding: 0.8rem;
+        
+        h3 {
+          font-size: 1rem;
+        }
+      }
+    }
   }
   
-  .featured-article .main-story h1 {
-    font-size: 3rem;
+  .featured-article {
+    order: 0;
+    
+    .main-story h1 {
+      font-size: 2.5rem;
+    }
+    
+    .story-image {
+      height: 200px;
+    }
   }
   
-  .more-stories .story-item h2 {
-    font-size: 2rem;
+  .columns-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
-  .post h1 {
-    font-size: 2.5rem;
-  }
-  
-  .post .post-image {
-    height: 250px;
+  .column-story {
+    padding: 1rem;
+    
+    h2 {
+      font-size: 1.2rem;
+    }
   }
   
   .main-content {
@@ -464,15 +520,19 @@ body {
 
 @media (max-width: 480px) {
   .featured-article .main-story h1 {
-    font-size: 2.5rem;
-  }
-  
-  .trending-sidebar h2 {
     font-size: 2rem;
   }
   
-  .more-stories .story-item h2 {
-    font-size: 1.8rem;
+  .side-cards .side-card {
+    flex: 0 0 180px;
+    
+    .card-content h3 {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .column-story h2 {
+    font-size: 1.1rem;
   }
   
   .post h1 {

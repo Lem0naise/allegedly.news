@@ -9,7 +9,26 @@
 <body>
 	{% include header.html %}
 	<main class="main-content">
-		<div class="news-layout">
+		<!-- Top Section with Featured Story and Side Cards -->
+		<div class="newspaper-layout">
+			<!-- Left Side Cards -->
+			<aside class="side-cards left-cards">
+				{% assign left_posts = site.posts | offset: 1 | limit: 3 %}
+				{% for post in left_posts %}
+					<article class="side-card">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
+						{% else %}
+							<div class="card-image-placeholder"></div>
+						{% endif %}
+						<div class="card-content">
+							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
+						</div>
+					</article>
+				{% endfor %}
+			</aside>
+
 			<!-- Main Featured Article -->
 			<section class="featured-article">
 				{% assign featured_post = site.posts.first %}
@@ -19,33 +38,44 @@
 					{% if featured_post.image %}
 						<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image">
 					{% endif %}
-					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 300 }}</p>
+					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 200 }}</p>
 				</article>
 			</section>
 
-			<!-- Trending Sidebar -->
-			<aside class="trending-sidebar">
-                {% assign all_posts_except_first = site.posts | offset: 1 %}
-                {% assign trending_posts = all_posts_except_first | sample: 3 %}
-                {% for post in trending_posts %}
-                    <article class="trending-item">
-                        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
-                        <p class="trending-meta">{{ post.date | date: "%b %d" }}</p>
-                    </article>
-                {% endfor %}
-            </aside>
+			<!-- Right Side Cards -->
+			<aside class="side-cards right-cards">
+				{% assign right_posts = site.posts | offset: 4 | limit: 3 %}
+				{% for post in right_posts %}
+					<article class="side-card">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
+						{% else %}
+							<div class="card-image-placeholder"></div>
+						{% endif %}
+						<div class="card-content">
+							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
+						</div>
+					</article>
+				{% endfor %}
+			</aside>
 		</div>
 
-		<!-- More Stories Section -->
-		<section class="more-stories">
-			{% assign more_posts = site.posts | offset: 4 %}
-			{% for post in more_posts %}
-				<article class="story-item">
-					<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-					<p class="story-meta">{{ post.date | date: "%B %d, %Y" }}</p>
-					<p>{{ post.excerpt | strip_html | truncate: 150 }}</p>
-				</article>
-			{% endfor %}
+		<!-- Newspaper Columns Section -->
+		<section class="newspaper-columns">
+			{% assign column_posts = site.posts | offset: 7 %}
+			{% assign total_posts = column_posts | size %}
+			{% if total_posts > 0 %}
+				<div class="columns-grid">
+					{% for post in column_posts %}
+						<article class="column-story">
+							<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+							<p class="column-meta">{{ post.date | date: "%b %d, %Y" }}</p>
+							<p class="column-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+						</article>
+					{% endfor %}
+				</div>
+			{% endif %}
 		</section>
 	</main>
 	{% include footer.html %}
