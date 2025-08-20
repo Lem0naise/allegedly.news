@@ -14,14 +14,16 @@
 
 			<!-- Left Side Cards -->
 			<aside class="side-cards left-cards">
-				{% assign left_posts = site.posts | offset: 1 | sample: 3 %}
+				{% assign left_posts = site.posts | offset: 1 | limit : 3 %}
 
-				<div style="display:none; background-color: #ffcccb; border: 2px solid red; padding: 10px; margin: 10px; max-width: 10px;">
-        <h3>Debugging 'left_posts'</h3>
-        <p><strong>Number of posts found:</strong> {{ left_posts | size }}</p>
-        <p><strong>Data inside variable:</strong></p>
-        <pre><code>{{ left_posts | inspect }}</code></pre>
-    </div>
+				
+	<div style="background-color: #d4edda; border: 2px solid green; padding: 10px; margin: 10px;">
+    <h3>Testing a simple array</h3>
+    {% assign numbers = "1,2,3,4,5,6" | split: "," %}
+    {% assign limited_numbers = numbers | limit: 3 %}
+    <p><strong>Number of items found:</strong> {{ limited_numbers | size }}</p>
+    <p><strong>Data:</strong> {{ limited_numbers | inspect }}</p>
+</div>
 
 	
 				{% for post in left_posts %}

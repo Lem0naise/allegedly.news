@@ -1,12 +1,18 @@
 <header class="site-header">
 	<div class="container">
-		<a href="/" class="site-title">{{ site.title }}</a>
+		<div class="header-content">
+			<div class="title-with-icon">
+				<img src="{{ "/assets/icons/allegedlyicontrans.png" | relative_url }}" alt="Allegedly News Icon" class="site-icon">
+				<div class="title-text">
+					<a href="/" class="site-title">{{ site.title }}</a>
+					<p class="site-tagline">Mostly news, entirely satire</p>
+				</div>
+			</div>
+		</div>
 		<nav class="site-nav">
 			<ul>
 				<li><a href="/">Home</a></li>
-				<li><a href="/about/">About</a></li>
-				<li><a href="/categories/">Categories</a></li>
-				<li><a href="/contact/">Contact</a></li>
+				<li><a href="/contribue/">contribute</a></li>
 			</ul>
 		</nav>
 	</div>
