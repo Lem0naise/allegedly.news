@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{ site.title }}</title>
-	<meta name="description" content="Your Daily Download Of Misinformation" >
+	<meta name="description" content="Reporting for the many, not the few" >
 	<link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
 
 	<link rel="icon" type="image/x-icon" href="{{ "/assets/icons/favicon.ico" | relative_url }}">
@@ -23,7 +23,6 @@
 	{% elsif site.image %}
 		<meta property="og:image" content="{{ site.image | absolute_url }}">
 	{% endif %}
-	
 
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="{{ page.title | default: site.title }}">
@@ -40,23 +39,6 @@
 		<!-- Top Section with Featured Story and Side Cards -->
 		<div class="newspaper-layout">
 
-			<!-- Left Side Cards -->
-			<aside class="side-cards left-cards">
-				{% assign left_posts = site.posts | slice : 1, 3 %}	
-				{% for post in left_posts %}
-					<article class="side-card">
-						{% if post.image %}
-							<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
-						{% else %}
-							<div class="card-image-placeholder"></div>
-						{% endif %}
-						<div class="card-content">
-							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
-							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
-						</div>
-					</article>
-				{% endfor %}
-			</aside>
 
 			<!-- Main Featured Article -->
 			<section class="featured-article">
@@ -65,15 +47,17 @@
 					<h1><a href="{{ featured_post.url }}">{{ featured_post.title }}</a></h1>
 					<p class="story-meta">{{ featured_post.date | date: "%B %d, %Y" }}</p>
 					{% if featured_post.image %}
-						<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image">
+						<div class="story-image-container">
+							<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image">
+						</div>
 					{% endif %}
-					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 200 }}</p>
+					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 400 }}</p>
 				</article>
 			</section>
 
 			<!-- Right Side Cards -->
 			<aside class="side-cards right-cards">
-				{% assign right_posts = site.posts | slice : 4, 3 %}
+				{% assign right_posts = site.posts | slice : 1, 3 %}
 				{% for post in right_posts %}
 					<article class="side-card">
 						{% if post.image %}
@@ -92,15 +76,22 @@
 
 		<!-- Newspaper Columns Section -->
 		<section class="newspaper-columns">
-			{% assign column_posts = site.posts | slice: 7 %}
+			{% assign column_posts = site.posts | slice: 4 %}
 			{% assign total_posts = column_posts | size %}
 			{% if total_posts > 0 %}
 				<div class="columns-grid">
 					{% for post in column_posts %}
 						<article class="column-story">
-							<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-							<p class="column-meta">{{ post.date | date: "%b %d, %Y" }}</p>
-							<p class="column-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+							{% if post.image %}
+								<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
+							{% else %}
+								<div class="card-image-placeholder"></div>
+							{% endif %}
+							<div class="card-content">
+								<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+								<p class="card-meta">{{ post.date | date: "%b %d, %Y" }}</p>
+								<p class="column-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+							</div>
 						</article>
 					{% endfor %}
 				</div>

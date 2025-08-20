@@ -101,7 +101,6 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-top: 0.2rem;
   font-style: italic;
 }
 
@@ -138,7 +137,7 @@ body {
 // Newspaper Layout
 .newspaper-layout {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
   border-bottom: 3px solid var(--primary-color);
@@ -153,7 +152,6 @@ body {
   gap: 1.5rem;
   
   .side-card {
-    border: 2px solid var(--primary-color);
     background: var(--background-color);
     overflow: hidden;
     
@@ -161,7 +159,7 @@ body {
       width: 100%;
       height: 120px;
       object-fit: cover;
-      border-bottom: 2px solid var(--primary-color);
+
     }
     
     .card-image-placeholder {
@@ -251,8 +249,12 @@ body {
       width: 100%;
       height: 300px;
       object-fit: cover;
+      margin-bottom: 0;
+
+    }
+    
+    .story-image-container {
       margin-bottom: 1.5rem;
-      border: 2px solid var(--primary-color);
     }
     
     .story-excerpt {
@@ -271,62 +273,82 @@ body {
   
   .columns-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    column-gap: 3rem;
   }
   
   .column-story {
-    border: 1px solid var(--medium-gray);
-    padding: 1.5rem;
+
     background: var(--background-color);
+    overflow: hidden;
     break-inside: avoid;
-    margin-bottom: 1rem;
     
-    h2 {
-      text-transform:capitalize;
-      font-family: var(--font-main);
-      font-size: 1.4rem;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 0.75rem;
-      color: var(--primary-color);
+    .card-image, .card-image-placeholder {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+
+    }
+    
+    .card-image-placeholder {
+      background: var(--light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       
-      a {
-        color: var(--primary-color);
-        text-decoration: none;
-        
-        &:hover {
-          color: var(--accent-color);
-        }
+      &::before {
+        content: "No Image";
       }
     }
     
-    .column-meta {
-      font-family: var(--font-meta);
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 1rem;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .column-excerpt {
-      font-size: 0.95rem;
-      line-height: 1.4;
-      color: var(--secondary-color);
+    .card-content {
+      padding: 1.5rem;
+      
+      h3 {
+        font-family: var(--font-main);
+        font-size: 1.3rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-transform: capitalize;
+        margin-bottom: 0.75rem;
+        
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+          
+          &:hover {
+            color: var(--accent-color);
+          }
+        }
+      }
+      
+      .card-meta {
+        font-family: var(--font-meta);
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+      }
+      
+      .column-excerpt {
+        font-size: 0.95rem;
+        line-height: 1.4;
+        color: var(--secondary-color);
+      }
     }
   }
 }
 
 // Individual Post Styles
 .post-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
+  max-width: 60vw;
 }
 
 .post {
@@ -336,7 +358,7 @@ body {
     font-family: var(--font-main);
     font-size: 3.5rem;
     font-weight: 900;
-    line-height: 1;
+    line-height: 0.9;
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     text-transform: capitalize;
@@ -358,8 +380,12 @@ body {
     width: 100%;
     height: 400px;
     object-fit: cover;
+    margin-bottom: 0;
+
+  }
+  
+  .post-image-container {
     margin-bottom: 2rem;
-    border: 3px solid var(--primary-color);
   }
   
   .post-content {
@@ -444,6 +470,22 @@ body {
   }
 }
 
+// Image Caption Styles
+.image-caption {
+  font-family: var(--font-meta);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 0.1rem;
+  text-align: left;
+  line-height: 0.9;
+  text-decoration: none;
+}
+.image-caption a {
+  text-decoration: none;
+  color: var(--text-muted);
+}
+
 // Related Stories Sidebar (Desktop)
 .related-stories-sidebar {
   position: sticky;
@@ -462,7 +504,7 @@ body {
   }
   
   .related-story-card {
-    border: 2px solid var(--primary-color);
+
     background: var(--background-color);
     margin-bottom: 1.5rem;
     overflow: hidden;
@@ -471,7 +513,7 @@ body {
       width: 100%;
       height: 100px;
       object-fit: cover;
-      border-bottom: 2px solid var(--primary-color);
+
     }
     
     .related-image-placeholder {
@@ -545,7 +587,7 @@ body {
   }
   
   .related-story-item {
-    border: 2px solid var(--primary-color);
+
     background: var(--background-color);
     overflow: hidden;
     
@@ -553,7 +595,6 @@ body {
       width: 100%;
       height: 150px;
       object-fit: cover;
-      border-bottom: 2px solid var(--primary-color);
     }
     
     .related-grid-placeholder {
@@ -644,6 +685,19 @@ body {
 }
 
 // Responsive Design
+@media (max-width: 1024px) {
+  .newspaper-columns .columns-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  // Post Layout Mobile
+  .post-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-width: none;
+  }
+}
+
 @media (max-width: 768px) {
  .featured-article {
 
@@ -689,6 +743,7 @@ body {
       padding: 0.3rem 0.6rem;
       font-size: 0.8rem;
     }
+    margin-bottom: 0.4rem;
   }
   
   .newspaper-layout {
@@ -738,10 +793,16 @@ body {
   }
   
   .column-story {
-    padding: 1rem;
+    .card-image, .card-image-placeholder {
+      height: 150px;
+    }
     
-    h2 {
-      font-size: 1.2rem;
+    .card-content {
+      padding: 1rem;
+      
+      h3 {
+        font-size: 1.1rem;
+      }
     }
   }
   
@@ -749,6 +810,7 @@ body {
   .post-layout {
     grid-template-columns: 1fr;
     gap: 0;
+    max-width: none;
   }
   
   .related-stories-sidebar {
@@ -790,6 +852,11 @@ body {
     height: 250px;
   }
   
+  .image-caption {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
   .main-content {
     padding: 1rem 15px;
   }
@@ -812,8 +879,14 @@ body {
     }
   }
   
-  .column-story h2 {
-    font-size: 1.1rem;
+  .column-story {
+    .card-content h3 {
+      font-size: 1rem;
+    }
+    
+    .card-image, .card-image-placeholder {
+      height: 120px;
+    }
   }
   
   .post h1 {
