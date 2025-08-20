@@ -4,7 +4,8 @@ title: "UK Government Announces Plans To Arrest Tim Berners-Lee On Terrorism Cha
 date: 2025-08-17 10:20:00 +0100
 categories: breaking
 author: Indigo Nolan
-image: /assets/images/timbernerslee.webp
+image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/UK_Prime_Minister_Keir_Starmer_gives_Press_Statement_%2854278036717%29.jpg/1000px-UK_Prime_Minister_Keir_Starmer_gives_Press_Statement_%2854278036717%29.jpg'
+caption: '<a href="https://commons.wikimedia.org/wiki/File:UK_Prime_Minister_Keir_Starmer_gives_Press_Statement_(54278036717).jpg">Simon Dawson / No 10 Downing Street</a>, <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3">OGL 3</a>, via Wikimedia Commons'
 ---
 
 LONDON—In a decisive move to finally hold someone accountable for the internet, Home Secretary James Cleverly announced Wednesday morning that the government would seek the arrest of Sir Tim Berners-Lee, 70, for his role in creating the vital infrastructure to provide a website for a known terrorist organisation.

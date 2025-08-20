@@ -4,10 +4,10 @@ title: "Leaked Memo Reveals All Corporate Apology Emails Written by Single Overw
 date: 2025-08-14 09:45:00 +0100
 categories: business
 author: Indigo Nolan
-image: '/assets/images/gutierrez.jpg'
+image: 'https://images.pexels.com/photos/834863/pexels-photo-834863.jpeg'
 ---
 
-BURLINGTON,VT—A memo leaked to Allegedly News on Friday has revealed that almost all corporate emails have been written by Oscar Gutierrez, an intern for Abacus Solutions Ltd, since 2021. Gutierrez began to write emails for his seniors at Abacus Solutions when they took time off to get the Covid-19 vaccination, and he said he liked it so much he offered to keep doing it. Since then, Abacus have sublet Gutierrez to over 10,000 different companies, including Google, Meta, X, Tencent, Allegedly News, and CNN.
+BURLINGTON,VT—A memo leaked to Allegedly News on Friday has revealed that almost all corporate emails for the last three years have been written by Oscar Gutierrez, an intern for Abacus Solutions Ltd, since 2021. Gutierrez began to write emails for his seniors at Abacus Solutions when they took time off to get the Covid-19 vaccination, and he said he liked it so much he offered to keep doing it. Since then, Abacus have sublet Gutierrez to over 10,000 different companies, including Google, Meta, X, Tencent, Allegedly News, and CNN.
 
 "It's just something to do at work," said Gutierrez when we interviewed him in his office in Burlington, Vermont. "Before this, I was just sitting around playing solitaire all day," he continued, talking to us from behind his seventy-thre monitor setup. 
 
