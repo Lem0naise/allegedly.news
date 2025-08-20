@@ -6,6 +6,12 @@
 	<title>{{ page.title }} | {{ site.title }}</title>
     <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
     
+	<link rel="icon" type="image/x-icon" href="{{ "/assets/icons/favicon.ico" | relative_url }}">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="{{ "/assets/icons/favicon32.ico" | relative_url }}">
+    <link rel="shortcut icon" href="{{ "/assets/icons/favicon.ico" | relative_url }}">
+    
+
+	
     <meta property="og:title" content="{{ page.title | default: site.title }}">
 <meta property="og:description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
