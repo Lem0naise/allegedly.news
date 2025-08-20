@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Contribute - {{ site.title }}</title>
+	<meta name="description" content="Join our elite team of professional misinformation spreaders">
+	<link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+
+	<link rel="icon" type="image/x-icon" href="{{ "/assets/icons/favicon.ico" | relative_url }}">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="{{ "/assets/icons/favicon32.ico" | relative_url }}">
+    <link rel="shortcut icon" href="{{ "/assets/icons/favicon.ico" | relative_url }}">
+
+	<meta property="og:title" content="Contribute - {{ site.title }}">
+	<meta property="og:description" content="Join our elite team of professional misinformation spreaders">
+	<meta property="og:url" content="{{ page.url | absolute_url }}">
+	<meta property="og:site_name" content="{{ site.title }}">
+	<meta property="og:type" content="website">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Contribute - {{ site.title }}">
+	<meta name="twitter:description" content="Join our elite team of professional misinformation spreaders">
+	{% if site.twitter_username %}
+		<meta name="twitter:site" content="@{{ site.twitter_username }}">
+	{% endif %}
+</head>
+<body>
+	{% include header.html %}
+	
+	<main class="main-content">
+		<div class="post-layout">
+			<article class="post">
+				<h1>Join Our Elite Team of Journalists</h1>
+				
+				<div class="post-meta">
+					Contributing to Excellence Since Never
+				</div>
+
+				<div class="post-content">
+					<p>Congratulations! You've stumbled upon the most exclusive opportunity in modern journalism: the chance to contribute to Allegedly News.</p>
+
+					<h2>Why Contribute to Allegedly News?</h2>
+					
+					<p>Are you tired of those pesky <em>"reliable sources"</em> and <em>"fact-checking"</em> getting in the way of a good story? Do you believe that the truth is just a suggestion and reality is merely a social construct? Then you, dear reader, have found your calling.</p>
+
+					<p>At Allegedly News, we pride ourselves on being the internet's premier destination for information that is <strong>allegedly</strong> true, <strong>supposedly</strong> verified, and <strong>definitely</strong> entertaining. We're looking for contributors who share our passion for creative storytelling and our commitment to keeping lawyers very, very busy.</p>
+
+					
+					<h3>What We Offer</h3>
+					
+                    <p>"We offer the invaluable experience of having your work read by dozens of people worldwide, the satisfaction of knowing you've contributed to the global confusion, and payment in exposure (which, last we checked, is accepted at every shop worldwide)."</p>
+
+					<p>But seriously, I'm building a community of satirical writers and comedy enthusiasts who appreciate the finer art of parody journalism. If you've got a knack for satire, a love for absurdist humor, or just enjoy poking fun at the state of modern media, I'd love to hear from you.</p>
+
+					<p>Ready to allegedly make a difference? Here's how you can get involved:</p>
+
+                    <h4>Discord</h4>
+                    <a href="#">Join our Discord community to contribute!</a>
+
+                     <h4>Twitter</h4>
+                    <a href="https://x.com/allegedlynewsHQ">Follow us at @AllegedlyNewsHQ</a>
+
+                     <h4>Indigo Nolan</h4>
+                    <a href="https://indigonolan.com">Meet the mastermind behind the madness.</a>
+
+
+					<p style="text-align: center; font-style: italic; margin-top: 3rem; color: var(--text-muted);">
+						<strong>Allegedly News</strong> - Where Facts Fear to Tread Since 2025*<br>
+						<small>*Date allegedly accurate</small>
+					</p>
+				</div>
+			</article>
+
+			<!-- Sidebar for related/recent posts -->
+			<aside class="related-stories-sidebar">
+				<h3>Breaking News</h3>
+				{% assign recent_posts = site.posts | slice : 0,4 %}
+				{% for post in recent_posts %}
+					<article class="related-story-card">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="related-image">
+						{% else %}
+							<div class="related-image-placeholder"></div>
+						{% endif %}
+						<div class="related-content">
+							<h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
+							<p class="related-meta">{{ post.date | date: "%b %d" }}</p>
+						</div>
+					</article>
+				{% endfor %}
+			</aside>
+		</div>
+	</main>
+	
+	{% include footer.html %}
+</body>
+</html>
