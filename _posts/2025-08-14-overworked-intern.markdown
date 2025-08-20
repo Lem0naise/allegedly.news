@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Leaked Memo Reveals All Corporate Apology Emails Written by Single Overworked Intern"
-date: 2025-08-18 09:45:00 +0100
+date: 2025-08-14 09:45:00 +0100
 categories: business
 author: Indigo Nolan
 image: '/assets/images/gutierrez.jpg'

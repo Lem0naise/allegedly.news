@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "UK Government Announces Plans To Arrest Tim Berners-Lee On Terrorism Charge"
-date: 2025-08-19 16:20:00 +0100
+date: 2025-08-17 10:20:00 +0100
 categories: breaking
 author: Indigo Nolan
 image: /assets/images/timbernerslee.webp

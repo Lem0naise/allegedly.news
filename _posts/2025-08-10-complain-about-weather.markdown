@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Brits Complain About the Weather a Record 78% of the year"
-date: 2025-08-19 14:15:00 +0100
+date: 2025-08-10 14:15:00 +0100
 author: Indigo Nolan
 categories: weather
 image: https://thumbs.dreamstime.com/b/hot-weather-concept-young-man-sweating-thermometer-showing-high-temperature-sun-background-hot-weather-concept-young-man-117128246.jpg
