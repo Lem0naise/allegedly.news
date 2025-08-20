@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "UK Government Kills"
-date: 2025-08-17 16:20:00 +0100
+title: "Another One"
+date: 2025-08-17 11:20:00 +0100
 categories: politics tech
 image: /assets/images/4.png
 ---

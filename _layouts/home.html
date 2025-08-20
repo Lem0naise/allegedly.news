@@ -11,9 +11,19 @@
 	<main class="main-content">
 		<!-- Top Section with Featured Story and Side Cards -->
 		<div class="newspaper-layout">
+
 			<!-- Left Side Cards -->
 			<aside class="side-cards left-cards">
-				{% assign left_posts = site.posts | offset: 1 | limit: 3 %}
+				{% assign left_posts = site.posts | offset: 1 | sample: 3 %}
+
+				<div style="display:none; background-color: #ffcccb; border: 2px solid red; padding: 10px; margin: 10px; max-width: 10px;">
+        <h3>Debugging 'left_posts'</h3>
+        <p><strong>Number of posts found:</strong> {{ left_posts | size }}</p>
+        <p><strong>Data inside variable:</strong></p>
+        <pre><code>{{ left_posts | inspect }}</code></pre>
+    </div>
+
+	
 				{% for post in left_posts %}
 					<article class="side-card">
 						{% if post.image %}

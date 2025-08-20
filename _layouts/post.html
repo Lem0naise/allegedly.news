@@ -9,16 +9,59 @@
 <body>
 	{% include header.html %}
 	<main class="main-content">
-		<article class="post">
-			<h1>{{ page.title }}</h1>
-			<p class="post-meta">Published {{ page.date | date: "%B %d, %Y" }} - {{page.author}}</p>
-			{% if page.image %}
-				<img src="{{ page.image }}" alt="{{ page.title }}" class="post-image">
-			{% endif %}
-			<div class="post-content">
-				{{ content }}
+		<div class="post-layout">
+			<article class="post">
+				<h1>{{ page.title }}</h1>
+				<p class="post-meta">Published {{ page.date | date: "%B %d, %Y" }} - {{page.author}}</p>
+				{% if page.image %}
+					<img src="{{ page.image }}" alt="{{ page.title }}" class="post-image">
+				{% endif %}
+				<div class="post-content">
+					{{ content }}
+				</div>
+			</article>
+
+			<!-- Related Stories Sidebar (Desktop) -->
+			<aside class="related-stories-sidebar">
+				<h3>More Stories</h3>
+				{% assign related_posts = site.posts | where_exp: "post", "post.url != page.url" | sample : 3 %}
+				{% for post in related_posts %}
+					<article class="related-story-card">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="related-image">
+						{% else %}
+							<div class="related-image-placeholder"></div>
+						{% endif %}
+						<div class="related-content">
+							<h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
+							<p class="related-meta">{{ post.date | date: "%b %d" }}</p>
+						</div>
+					</article>
+				{% endfor %}
+			</aside>
+		</div>
+
+		<!-- Related Stories Section (Mobile/Bottom) -->
+		<section class="related-stories-bottom">
+			<h3>You Might Also Like</h3>
+			<div class="related-stories-grid">
+				{% assign more_related_posts = site.posts | where_exp: "post", "post.url != page.url" | sample: 6 %}
+				{% for post in more_related_posts %}
+					<article class="related-story-item">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="related-grid-image">
+						{% else %}
+							<div class="related-grid-placeholder"></div>
+						{% endif %}
+						<div class="related-grid-content">
+							<h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
+							<p class="related-grid-meta">{{ post.date | date: "%b %d" }}</p>
+							<p class="related-excerpt">{{ post.excerpt | strip_html | truncate: 80 }}</p>
+						</div>
+					</article>
+				{% endfor %}
 			</div>
-		</article>
+		</section>
 	</main>
 	{% include footer.html %}
 </body>

@@ -3,13 +3,13 @@ layout: post
 title: "Brits Complain About the Weather a Record 78% of the year"
 date: 2025-08-19 14:15:00 +0100
 author: Indigo Nolan
-categories: weather politics
+categories: weather
 image: https://thumbs.dreamstime.com/b/hot-weather-concept-young-man-sweating-thermometer-showing-high-temperature-sun-background-hot-weather-concept-young-man-117128246.jpg
 ---
 
-British people have a lot to complain about, ranging from soaring Magnum ice cream prices, thirteen-hour queue time for the WHSmith Post Office, and most importantly, baking 28 degree summer days. 
+MANCHESTER—British people have a lot to complain about, ranging from soaring Magnum ice cream prices, thirteen-hour queue time for the WHSmith Post Office, and most importantly, baking 28 degree summer days. 
 
-A new study by the British Institute of Perpetual Inquiry (BIPI) has found that in 2024, the British public made complaints about the weather a whoppping 78% of the year, a record-breaking number.
+A new study by the Manchester Men's Monetary Institute of Perpetual Inquiry (MMMIPI) has found that in 2024, the British public made complaints about the weather a whoppping 78% of the year, a record-breaking number.
 
 "Frankly, we're surprised the figure isn't higher," said Dr. Tipperary Montgomery, the lead researcher on the study. "Our data shows that complaints were spread across all meteorological categories, including 'Too Wet,' 'Too Cold,' 'Deceptively Sunny,' and a rapidly growing category we've labelled 'Unseasonably Ominous Grey Drizzle.'"
 
