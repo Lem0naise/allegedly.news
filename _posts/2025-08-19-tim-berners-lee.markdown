@@ -3,7 +3,8 @@ layout: post
 title: "UK Government Announces Plans To Arrest Tim Berners-Lee On Terrorism Charge"
 date: 2025-08-19 16:20:00 +0100
 categories: politics tech
-image: /assets/images/1.webp
+author: Indigo Nolan
+image: /assets/images/timbernerslee.webp
 ---
 
 In a decisive move to finally hold someone accountable for the internet, Home Secretary James Cleverly announced Wednesday morning that the government would seek the arrest of Sir Tim Berners-Lee, 70, for his role in creating the vital infrastructure to provide a website for a known terrorist organisation.
