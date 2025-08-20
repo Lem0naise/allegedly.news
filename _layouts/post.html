@@ -5,6 +5,26 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{ page.title }} | {{ site.title }}</title>
     <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+    
+    <meta property="og:title" content="{{ page.title | default: site.title }}">
+<meta property="og:description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 }}">
+<meta property="og:url" content="{{ page.url | absolute_url }}">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:type" content="article">
+{% if page.image %}
+  <meta property="og:image" content="{{ page.image | absolute_url }}">
+{% elsif site.image %}
+  <meta property="og:image" content="{{ site.image | absolute_url }}">
+{% endif %}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page.title | default: site.title }}">
+<meta name="twitter:description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 }}">
+<meta name="twitter:image" content="{{ page.image | default: site.image | absolute_url }}">
+<meta name="twitter:site" content="@allegedlynewsHQ">
+
+
+
 </head>
 <body>
 	{% include header.html %}
