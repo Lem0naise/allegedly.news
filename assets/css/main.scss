@@ -149,7 +149,7 @@ body {
 .side-cards {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.5rem;
   
   .side-card {
     background: var(--background-color);
@@ -368,7 +368,7 @@ body {
     font-family: var(--font-meta);
     color: var(--text-muted);
     font-weight: 700;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--primary-color);
     font-size: 1rem;
@@ -385,7 +385,7 @@ body {
   }
   
   .post-image-container {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
   
   .post-content {
@@ -687,7 +687,7 @@ body {
 // Responsive Design
 @media (max-width: 1024px) {
   .newspaper-columns .columns-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   // Post Layout Mobile
@@ -805,12 +805,21 @@ body {
       }
     }
   }
+
   
   // Post Layout Mobile
   .post-layout {
     grid-template-columns: 1fr;
     gap: 0;
     max-width: none;
+    .image-caption {
+      font-size: 0.5rem;
+      padding: 0 0;
+    }
+
+    .post-image-container {
+      margin-bottom: 0.5rem;
+    }
   }
   
   .related-stories-sidebar {
@@ -854,7 +863,7 @@ body {
   
   .image-caption {
     font-size: 0.75rem;
-    padding: 0.4rem 0.6rem;
+
   }
   
   .main-content {

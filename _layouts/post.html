@@ -58,8 +58,8 @@
 		<section class="related-stories-bottom">
 			<h3>More Stories</h3>
 			<div class="related-stories-grid">
-				{% assign more_related_posts = site.posts | where_exp: "post", "post.url != page.url" | sample: 6 %}
-				{% for post in more_related_posts %}
+				{% assign more_related_posts = site.posts | where_exp: "post", "post.url != page.url" %}
+				{% for post in more_related_posts limit : 9 %}
 					<article class="related-story-item">
 						{% if post.image %}
 							<img src="{{ post.image }}" alt="{{ post.title }}" class="related-grid-image">
