@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Man Complaining About New Plastic Bottle Lids Doesn't Realise He Can Just Turn Bottle Sideways"
+title: "Man Complaining About New Plastic Bottle Lids Doesn't Realise He Can Just Turn The Fucker Sideways"
 date: 2025-08-20 12:15:00 +0100
 categories: life
 image: https://images.pexels.com/photos/4498091/pexels-photo-4498091.jpeg
