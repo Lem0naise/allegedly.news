@@ -1,0 +1,2 @@
+A satirical news site hosted at [allegedly.news](https://allegedly.news).
+Feel free to write a new article and make a PR by adding a new markdown file in the _posts folder! Look at the existing posts for the template. 
