@@ -38,7 +38,7 @@
 		<div class="post-layout">
 			<article class="post">
 				<h1>{{ page.title }}</h1>
-				<p class="post-meta">{{ page.date | date: "%B %d, %Y" }}</p>
+				<p class="post-meta">{{ page.date | date: "%B %d, %Y" }} • {{page.categories}}</p>
 				{% if page.image %}
 					<div class="post-image-container">
 						<img src="{{ page.image }}" alt="{{ page.title }}" class="post-image">
@@ -68,7 +68,7 @@
 						{% endif %}
 						<div class="related-grid-content">
 							<h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
-							<p class="related-grid-meta">{{ post.date | date: "%b %d" }}</p>
+							<p class="related-grid-meta">{{ post.date | date: "%b %d" }} • {{post.categories}}</p>
 						</div>
 					</article>
 				{% endfor %}

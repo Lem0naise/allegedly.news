@@ -55,7 +55,7 @@
 						{% endif %}
 						<div class="card-content">
 							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
-							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
+							<p class="card-meta">{{ post.date | date: "%b %d" }} • {{post.categories}}</p>
 						</div>
 					</article>
 				{% endfor %}
@@ -66,7 +66,7 @@
 				{% assign featured_post = site.posts.first %}
 				<article class="main-story">
 					<h1><a href="{{ featured_post.url }}">{{ featured_post.title }}</a></h1>
-					<p class="story-meta">{{ featured_post.date | date: "%B %d, %Y" }}</p>
+					<p class="story-meta">{{ featured_post.date | date: "%B %d, %Y" }} • {{featured_post.categories}}</p>
 					{% if featured_post.content != blank %}
 					{% if featured_post.image %}
 						<div class="story-image-container">
@@ -94,7 +94,7 @@
 						{% endif %}
 						<div class="card-content">
 							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
-							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
+							<p class="card-meta">{{ post.date | date: "%b %d" }} • {{post.categories}}</p>
 						</div>
 					</article>
 				{% endfor %}
@@ -113,7 +113,7 @@
 							{% endif %}
 							<div class="card-content">
 								<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
-								<p class="card-meta">{{ post.date | date: "%b %d, %Y" }}</p>
+								<p class="card-meta">{{ post.date | date: "%b %d, %Y" }} • {{post.categories}}</p>
 							</div>
 						</article>
 					{% endfor %}
