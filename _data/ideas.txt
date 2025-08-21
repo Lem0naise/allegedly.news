@@ -10,10 +10,6 @@
   date: 2025-08-20
   category: politics
 
-"Elon Musk Debuts New 'X' Feature Where It's Just The Old Twitter Logo But Upside Down"
-  date: 2025-08-19
-  category: tech
-
 "UK Home Secretary Announces New Deportation Scheme Where The Plane Is Just The Vague Concept Of Patriotism"
   date: 2025-08-18
   category: politics
