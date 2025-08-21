@@ -69,7 +69,6 @@
 						<div class="related-grid-content">
 							<h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
 							<p class="related-grid-meta">{{ post.date | date: "%b %d" }}</p>
-							<p class="related-excerpt">{{ post.excerpt | strip_html | truncate: 80 }}</p>
 						</div>
 					</article>
 				{% endfor %}

@@ -36,20 +36,48 @@
 <body>
 	{% include header.html %}
 	<main class="main-content">
+		
+		<!-- Breaking Headlines Section -->
+       
+
 		<!-- Top Section with Featured Story and Side Cards -->
 		<div class="newspaper-layout">
 
 
+			<!-- Right Side Cards -->
+			<aside class="side-cards left-cards">
+				{% for post in site.posts limit: 3 offset: 1 %}
+					<article class="side-card">
+						{% if post.image %}
+							<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
+						{% else %}
+							<div class="card-image-placeholder"></div>
+						{% endif %}
+						<div class="card-content">
+							<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+							<p class="card-meta">{{ post.date | date: "%b %d" }}</p>
+						</div>
+					</article>
+				{% endfor %}
+			</aside>
+			
 			<!-- Main Featured Article -->
 			<section class="featured-article">
 				{% assign featured_post = site.posts.first %}
 				<article class="main-story">
 					<h1><a href="{{ featured_post.url }}">{{ featured_post.title }}</a></h1>
 					<p class="story-meta">{{ featured_post.date | date: "%B %d, %Y" }}</p>
+					{% if featured_post.content != blank %}
 					{% if featured_post.image %}
 						<div class="story-image-container">
 							<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image">
 						</div>
+					{% endif %}
+					{% else %}
+						<div class="story-image-container">
+							<img src="{{ featured_post.image }}" alt="{{ featured_post.title }}" class="story-image taller">
+						</div>
+						{{featured_post.content}}
 					{% endif %}
 					<p class="story-excerpt">{{ featured_post.excerpt | strip_html | truncate: 300 }}</p>
 				</article>
@@ -57,7 +85,7 @@
 
 			<!-- Right Side Cards -->
 			<aside class="side-cards right-cards">
-				{% for post in site.posts limit: 3 offset: 1 %}
+				{% for post in site.posts limit: 3 offset: 4 %}
 					<article class="side-card">
 						{% if post.image %}
 							<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
@@ -76,7 +104,7 @@
 		<!-- Newspaper Columns Section -->
 		<section class="newspaper-columns">
 				<div class="columns-grid">
-					{% for post in site.posts offset : 4 %}
+					{% for post in site.posts offset : 7 %}
 						<article class="column-story">
 							{% if post.image %}
 								<img src="{{ post.image }}" alt="{{ post.title }}" class="card-image">
@@ -86,7 +114,6 @@
 							<div class="card-content">
 								<h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
 								<p class="card-meta">{{ post.date | date: "%b %d, %Y" }}</p>
-								<p class="column-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
 							</div>
 						</article>
 					{% endfor %}

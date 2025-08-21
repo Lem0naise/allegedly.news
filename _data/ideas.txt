@@ -1,0 +1,19 @@
+"U.S. Government Unveils Plan To Solve All Economic Problems By Simply Declaring Everyone Rich"
+  date: 2025-08-21
+  category: breaking
+
+"TikTok Executive Admits App Is Just An Elaborate System To Train People To Watch Ads"
+  date: 2025-08-20
+  category: business
+
+"Former President Biden's New Initiative To Unite The Country Is Just A Strongly-Worded Memo"
+  date: 2025-08-20
+  category: politics
+
+"Elon Musk Debuts New 'X' Feature Where It's Just The Old Twitter Logo But Upside Down"
+  date: 2025-08-19
+  category: tech
+
+"UK Home Secretary Announces New Deportation Scheme Where The Plane Is Just The Vague Concept Of Patriotism"
+  date: 2025-08-18
+  category: politics

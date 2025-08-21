@@ -3,7 +3,7 @@ layout: post
 title: "Sam Altman Announces ChatGPT-5o-o4-3-o5-mini-large-o5-5o-mini-pro-thinking-5-pro"
 date: 2025-08-18 12:20:00 +0100
 categories: tech
-image: https://upload.wikimedia.org/wikipedia/commons/8/8d/Sam_Altman_CropEdit_James_Tamim.jpg
+image: https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Sam_Altman_CropEdit_James_Tamim.jpg/1000px-Sam_Altman_CropEdit_James_Tamim.jpg
 caption: <a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg">TechCrunch</a>, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>, via Wikimedia Commons
 ---
 
