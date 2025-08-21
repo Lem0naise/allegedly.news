@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Man Who Said 'Thing's Can't Get Any Worse Now Legally Obligated To Run Country"
+title: "Man Who Said Things Can't Get Any Worse Now Legally Obligated To Run Country"
 date: 2025-08-15 14:15:00 +0100
 author: Indigo Nolan
 categories: breaking
