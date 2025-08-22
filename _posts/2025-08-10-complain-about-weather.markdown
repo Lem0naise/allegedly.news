@@ -7,7 +7,7 @@ categories: weather
 image: 'https://images.pexels.com/photos/4803729/pexels-photo-4803729.jpeg'
 ---
 
-MANCHESTER—British people have a lot to complain about, ranging from soaring Magnum ice cream prices, thirteen-hour queue time for the WHSmith Post Office, but, most importantly, baking 28 degree summer days and freezing 4 degree winter nights.
+MANCHESTER — British people have a lot to complain about, ranging from soaring Magnum ice cream prices, thirteen-hour queue time for the WHSmith Post Office, but, most importantly, baking 28 degree summer days and freezing 4 degree winter nights.
 
 A new study by the Manchester Men's Monetary Institute of Perpetual Inquiry (MMMIPI) has found that in 2024, the British public made complaints about the weather a whoppping 78% of the year, a record-breaking number.
 
