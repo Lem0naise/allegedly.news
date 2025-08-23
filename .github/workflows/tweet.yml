@@ -1,0 +1,29 @@
+# GitHub Action to tweet new blog posts from an RSS feed
+name: Tweet New Posts from RSS
+
+on:
+  # This runs the workflow on a schedule. This example is for every hour.
+  schedule:
+    - cron: '0 * * * *'
+  # This also allows you to run the workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tweet new posts from the RSS feed
+        # We are using a pre-made Action that handles all the logic
+        uses: gautamkrishnar/blog-post-workflow@v1
+        with:
+          # REQUIRED: Your RSS feed URL
+          feed_list: "https://allegedly.news/feed.xml"
+
+          # OPTIONAL: A template for your tweet. Use placeholders for the post title and URL.
+          tweet_template: "$title\n$url #AllegedlyNews"
+
+          # REQUIRED: Your X (Twitter) API credentials, pulled from GitHub Secrets
+          consumer_key: ${{ secrets.TWITTER_API_KEY }}
+          consumer_secret: ${{ secrets.TWITTER_API_SECRET }}
+          access_token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
