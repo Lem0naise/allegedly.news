@@ -780,9 +780,39 @@ body {
 // Responsive Design
 @media (max-width: 1024px) {
   .newspaper-columns .columns-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+
+      .card-image, .card-image-placeholder {
+        height: 120px;
+      }
+
+    .card-content {
+      padding: 0.5rem;
+        
+
+
+      h3 {
+        font-size: 0.9rem;
+        line-height: 1.1rem;
+        margin-bottom: 0.75rem;
+
+      }
+      
+      .card-meta {
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+      }
+      
+      .column-excerpt {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+    }
+    
   }
+
   // Post Layout Mobile
   .post-layout {
     grid-template-columns: 1fr;
