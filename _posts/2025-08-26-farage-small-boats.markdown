@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Farage Vows To Ban Boats Smaller Than 185cm" 
-date: 2025-08-23 10:20:00 +0100
+date: 2025-08-26 10:20:00 +0100
 categories: breaking
 image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Nigel_Farage_%2833149372715%29.jpg/1000px-Nigel_Farage_%2833149372715%29.jpg?20170228014354"
 caption: <a href="https://commons.wikimedia.org/wiki/File:Nigel_Farage_(33149372715).jpg">Gage Skidmore from Peoria, AZ, United States of America</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>, via Wikimedia CommonsA 3.0</a>, via Wikimedia Commons
