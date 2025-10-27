@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Brigitte Macron's Accusers Finally On Trial For Worst Crime: Bad Fan Fiction"
-date: "2025-10-28 14:32:00"
+date: "2025-10-27 17:03:46"
 categories: [politics]
 ---
 PARIS — In a landmark case that's got the salons of France buzzing like a hive of overcaffeinated bees, ten defendants are finally facing the music for their audacious online escapades: harassing Brigitte Macron with wild tales about her gender and sexuality. The charges? Sexist cyber-bullying, which prosecutors describe as "a digital drag show gone horribly wrong."
