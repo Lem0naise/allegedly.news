@@ -19,7 +19,14 @@ export default function Header() {
             </div>
           </div>
         </div>
+        <nav className="site-nav">
+          <ul>
+            <li>
+              Made by <a href='https://indigo.spot' target="_blank">Indigo Nolan</a>
+            </li>
 
+          </ul>
+        </nav>
       </div>
     </header>
   );

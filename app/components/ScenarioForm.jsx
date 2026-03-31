@@ -133,14 +133,14 @@ export default function ScenarioForm() {
   return (
     <>
       <div className="reset-bar">
-        <p className="scenario-label">
-          Scenario: <strong>&ldquo;{submittedScenario}&rdquo;</strong>
-        </p>
         <button onClick={handleReset} id="new-scenario-btn">
           New Scenario
         </button>
       </div>
       <NewspaperLayout articles={articles} />
+      <p className="scenario-label">
+        Scenario: <strong>&ldquo;{submittedScenario}&rdquo;</strong>
+      </p>
     </>
   );
 }

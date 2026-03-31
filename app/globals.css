@@ -121,9 +121,10 @@ body {
 
 /* ===== Main Content ===== */
 .main-content {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 1.5rem 20px;
+  padding-top: 0.5rem;
 }
 
 /* ===== Newspaper Layout ===== */
@@ -146,7 +147,7 @@ body {
 
 .side-cards .side-card {
   background: var(--background-color);
-  overflow: hidden;
+
 }
 
 .side-cards .side-card .card-image,
@@ -177,7 +178,7 @@ body {
 
 .side-cards .side-card .card-content h3 {
   font-family: var(--font-main);
-  font-size: 1.1rem;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
   text-transform: capitalize;
@@ -243,14 +244,10 @@ body {
 
 .featured-article .main-story .story-image {
   width: 100%;
-  max-height: 300px;
   object-fit: cover;
   margin-bottom: 0;
 }
 
-.featured-article .main-story .story-image.taller {
-  max-height: 600px;
-}
 
 .featured-article .main-story .story-excerpt {
   font-size: 1.1rem;
@@ -258,12 +255,6 @@ body {
   color: var(--secondary-color);
   font-weight: 400;
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  line-clamp: 5;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
   margin-top: 1rem;
 }
 
@@ -274,13 +265,13 @@ body {
 
 .newspaper-columns .columns-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
 }
 
 .newspaper-columns .column-story {
   background: var(--background-color);
-  overflow: hidden;
+
   break-inside: avoid;
 }
 
@@ -683,9 +674,6 @@ body {
     text-align: left;
   }
 
-  .featured-article .main-story .story-excerpt {
-    display: none;
-  }
 
   .site-header .container {
     flex-direction: column;
@@ -734,9 +722,10 @@ body {
 
   .side-cards {
     order: 1;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1rem;
-    overflow-x: auto;
+    max-width: 100%;
+    overflow-x: scroll;
     padding-bottom: 1rem;
   }
 
@@ -762,7 +751,7 @@ body {
   }
 
   .featured-article .main-story h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .featured-article .main-story .story-image {
@@ -788,11 +777,12 @@ body {
   }
 
   .column-story .card-content h3 {
-    font-size: 1.1rem;
+    font-size: 2rem;
   }
 
   .main-content {
     padding: 1rem 15px;
+    padding-top: 0rem;
   }
 
   .container {
@@ -828,11 +818,11 @@ body {
   }
 
   .side-cards .side-card .card-content h3 {
-    font-size: 0.9rem;
+    font-size: 1.5rem;
   }
 
   .column-story .card-content h3 {
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
 
   .column-story .card-image,

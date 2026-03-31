@@ -9,9 +9,10 @@ const SYSTEM_PROMPT = `You are a satirical newspaper headline generator. Given a
 
 IMPORTANT RULES:
 1. Return ONLY valid JSON, no markdown, no code fences, no extra text.
-2. Generate exactly 6 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) (e.g. The Sun, The Daily Mail, Le Monde, The Guardian, El Pais, The Times, The New York Times, BBC News, The Daily Telegraph).
-3. Each article must match the editorial voice and style of its publication. Tabloid headlines should be punchy, dramatic, and use wordplay. Broadsheet headlines should be measured and authoritative. (Even foreign publications should be written in English.)
-4. For the image_search_query field, provide ONE simple query that would find a relevant image on Wikimedia Commons. This MUST be a simple entity name (a person, place, or thing) — NOT a full sentence. For example: "Jeremy Corbyn" or "10 Downing Street" or "UK Parliament". Do NOT use descriptive phrases.
+2. Generate exactly 7 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) CRITICAL GEOGRAPHY RULE: You must analyze the scenario and choose publications native to the country where the scenario takes place (e.g., for a USA scenario, use NY Post, Fox News, Washington Post; for a French scenario, use Le Figaro, Libération, Le Parisien). Include 2 or 3 major foreign/international papers only if the event has global impact.
+3. Always use a mix of low-brow, sensationalist tabloids and high-brow, serious broadsheets to show different political biases. 
+4. Each article must match the editorial voice and style of its publication. Tabloid headlines should be punchy, dramatic, and use wordplay. Broadsheet headlines should be measured and authoritative. Foreign publications should have their headlines and text translated to English, but keep their native editorial bias.
+5. For the 'image_search_query' field: Provide a high-quality Google Image search string. Since we are using a real-world search API, provide a descriptive "news photo" query that captures the mood of the scenario, but will return real-life images.
 
 Return this exact JSON structure:
 {
@@ -20,12 +21,62 @@ Return this exact JSON structure:
     {
       "publication": "PUBLICATION NAME",
       "headline": "PUNCHY HEADLINE HERE",
-      "subheadline": "A one to two sentence subheadline expanding on the headline. It must sound exactly like the actual publication would write it, capturing their political bias and stylistic tone perfectly."
+      "subheadline": "For the First article, it should be six sentences. For all the rest, it should be a short 1-2 sentences. It must sound exactly like the actual publication would write it, capturing their political bias and stylistic tone perfectly."
     }
   ]
 }`;
 
 export const maxDuration = 60;
+
+// ---- Serper.dev Google Image Search ----
+async function fetchSerperImages(query, count = 7) {
+  const apiKey = process.env.SERPER_API_KEY;
+  if (!apiKey) {
+    console.error("Missing SERPER_API_KEY environment variable");
+    return [];
+  }
+
+  try {
+    const res = await fetch("https://google.serper.dev/images", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ q: query }),
+    });
+
+    if (!res.ok) {
+      console.error("Serper API error:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+
+    // Check if we got valid image results back
+    if (!data.images || !Array.isArray(data.images)) {
+      return [];
+    }
+
+    const validImages = data.images.filter(img => {
+      const url = img.imageUrl.toLowerCase();
+      return (
+        !url.includes('lookaside.instagram.com') &&
+        !url.includes('scontent.cdninstagram.com') &&
+        !url.includes('lookaside.fbsbx.com') &&
+        !url.includes("www.tiktok.com") &&
+        !url.includes('fbcdn.net') // Throws out Facebook's strict hotlink blockers too
+      );
+    });
+
+    // Extract just the image URLs, limited to the count we need
+    return validImages.slice(0, count).map(img => img.imageUrl);
+
+  } catch (err) {
+    console.error("Serper fetch failed:", err.message);
+    return [];
+  }
+}
 
 // ---- Wikimedia Commons image search ----
 async function fetchWikimediaImages(query, count = 5) {
@@ -190,12 +241,17 @@ export async function POST(request) {
     );
   }
 
-  // ---- Step B: Fetch images from Wikimedia ----
-  const imageQuery = llmData.image_search_query || scenario.trim();
-  const imageUrls = await fetchWikimediaImages(
-    imageQuery,
-    llmData.articles.length
-  );
+  // // ---- Step B: Fetch images from Wikimedia ----
+  // const imageQuery = llmData.image_search_query || scenario.trim();
+  // const imageUrls = await fetchWikimediaImages(
+  //   imageQuery,
+  //   llmData.articles.length
+  // );
+
+  // ---- Step B: Fetch exactly 6 images from Serper using the master query ----
+  // Fallback to the raw scenario text if the LLM forgot to generate the master query
+  const imageQuery = llmData.master_image_search_query || scenario.trim();
+  const imageUrls = await fetchSerperImages(imageQuery, 7);
 
   // Assign images to articles (round-robin if fewer images than articles)
   const articles = llmData.articles.map((article, i) => ({
