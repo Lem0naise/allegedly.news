@@ -7,6 +7,13 @@ const OPENROUTER_MODEL = "x-ai/grok-4-fast";
 
 const SYSTEM_PROMPT = `You are a satirical newspaper headline generator. Given an alternative-history scenario, you must generate a fake newspaper front page with articles from different real-world publications, as if that alternative-history was entirely true.
 
+INSTRUCTION: Do not just repeat the user's scenario in every headline. Instead, simulate the DOMINO EFFECT. If the scenario happens, what are the secondary consequences? 
+- What are the scandalous reactions from relevant people? 
+- Are there protests? 
+- Is the stock market crashing? 
+- What is the 'hot take' from a tabloid vs the 'analysis' from a broadsheet?
+- At least 3 of the 7 articles should be about CONSEQUENCES or REACTIONS, not the event itself.
+
 IMPORTANT RULES:
 1. Return ONLY valid JSON, no markdown, no code fences, no extra text.
 2. Generate exactly 7 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) CRITICAL GEOGRAPHY RULE: You must analyze the scenario and choose publications native to the country where the scenario takes place (e.g., for a USA scenario, use NY Post, Fox News, Washington Post; for a French scenario, use Le Figaro, Libération, Le Parisien). Include 3 or 4 major foreign/international papers if the event has global impact.
@@ -249,7 +256,7 @@ export async function POST(request) {
   //   llmData.articles.length
   // );
 
-  // ---- Step B: Fetch exactly 6 images from Serper using the master query ----
+  // ---- Step B: Fetch exactly 7 images from Serper using the master query ----
   // Fallback to the raw scenario text if the LLM forgot to generate the master query
   const imageQuery = llmData.master_image_search_query || scenario.trim();
   const imageUrls = await fetchSerperImages(imageQuery, 7);
