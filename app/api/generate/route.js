@@ -5,14 +5,15 @@ const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "x-ai/grok-4-fast";
 // "openai/gpt-4o";
 
-const SYSTEM_PROMPT = `You are a satirical newspaper headline generator. Given an alternative-history scenario, you must generate a fake newspaper front page with articles from different real-world publications.
+const SYSTEM_PROMPT = `You are a satirical newspaper headline generator. Given an alternative-history scenario, you must generate a fake newspaper front page with articles from different real-world publications, as if that alternative-history was entirely true.
 
 IMPORTANT RULES:
 1. Return ONLY valid JSON, no markdown, no code fences, no extra text.
-2. Generate exactly 7 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) CRITICAL GEOGRAPHY RULE: You must analyze the scenario and choose publications native to the country where the scenario takes place (e.g., for a USA scenario, use NY Post, Fox News, Washington Post; for a French scenario, use Le Figaro, Libération, Le Parisien). Include 2 or 3 major foreign/international papers only if the event has global impact.
+2. Generate exactly 7 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) CRITICAL GEOGRAPHY RULE: You must analyze the scenario and choose publications native to the country where the scenario takes place (e.g., for a USA scenario, use NY Post, Fox News, Washington Post; for a French scenario, use Le Figaro, Libération, Le Parisien). Include 3 or 4 major foreign/international papers if the event has global impact.
 3. Always use a mix of low-brow, sensationalist tabloids and high-brow, serious broadsheets to show different political biases. 
-4. Each article must match the editorial voice and style of its publication. Tabloid headlines should be punchy, dramatic, and use wordplay. Broadsheet headlines should be measured and authoritative. Foreign publications should have their headlines and text translated to English, but keep their native editorial bias.
-5. For the 'image_search_query' field: Provide a high-quality Google Image search string. Since we are using a real-world search API, provide a descriptive "news photo" query that captures the mood of the scenario, but will return real-life images.
+4. Each article must match the editorial voice and style of its publication. Tabloid headlines should be punchy, dramatic, and use wordplay. Broadsheet headlines should be measured and authoritative. 
+5. Foreign publications should have their headlines and text written in English.
+6. For the 'image_search_query' field: Provide a high-quality Google Image search string. Since we are using a real-world search API, provide a descriptive "news photo" query that captures the mood of the scenario, but will return real-life images.
 
 Return this exact JSON structure:
 {
