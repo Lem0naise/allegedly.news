@@ -1,3 +1,8 @@
+/* ===================================================================
+   ALLEGEDLY NEWS — Global Styles
+   Complete rewrite for timeline mosaic with multiple content types
+   =================================================================== */
+
 /* Import Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=PT+Serif+Caption:ital@0;1&family=Radley:ital@0;1&family=Slabo+13px&family=Slabo+27px&display=swap');
@@ -15,6 +20,7 @@
   --border-color: #000000;
   --text-color: #000000;
   --text-muted: #666666;
+  --page-bg: #F0F2F5;
 }
 
 /* Reset and Base Styles */
@@ -127,210 +133,6 @@ body {
   padding-top: 0.5rem;
 }
 
-/* ===== Newspaper Layout ===== */
-.newspaper-layout {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  border-bottom: 3px solid var(--primary-color);
-  padding-bottom: 2rem;
-  align-items: start;
-}
-
-/* ===== Side Cards ===== */
-.side-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.side-cards .side-card {
-  background: var(--background-color);
-
-}
-
-.side-cards .side-card .card-image,
-.side-cards .side-card .card-image-placeholder {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-.side-cards .side-card .card-image-placeholder {
-  background: var(--light-gray);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.side-cards .side-card .card-image-placeholder::before {
-  content: "No Image";
-}
-
-.side-cards .side-card .card-content {
-  padding: 1rem;
-}
-
-.side-cards .side-card .card-content h3 {
-  font-family: var(--font-main);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-  text-transform: capitalize;
-  margin-bottom: 0.5rem;
-}
-
-.side-cards .side-card .card-content h3 a,
-.side-cards .side-card .card-content h3 span {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.side-cards .side-card .card-content h3 a:hover,
-.side-cards .side-card .card-content h3 span:hover {
-  color: var(--accent-color);
-}
-
-.side-cards .side-card .card-content .card-meta {
-  font-family: var(--font-meta);
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ===== Featured Article ===== */
-.featured-article .main-story h1 {
-  font-family: var(--font-main);
-  font-size: 3.5rem;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-  text-transform: capitalize;
-  letter-spacing: -0.02em;
-}
-
-.featured-article .main-story h1 a,
-.featured-article .main-story h1 span {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.featured-article .main-story h1 a:hover,
-.featured-article .main-story h1 span:hover {
-  color: var(--accent-color);
-}
-
-.featured-article .main-story .story-meta {
-  font-family: var(--font-meta);
-  color: var(--text-muted);
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.featured-article .main-story .story-image-container {
-  margin-bottom: 0;
-}
-
-.featured-article .main-story .story-image {
-  width: 100%;
-  object-fit: cover;
-  margin-bottom: 0;
-}
-
-
-.featured-article .main-story .story-excerpt {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  color: var(--secondary-color);
-  font-weight: 400;
-  text-align: left;
-  margin-top: 1rem;
-}
-
-/* ===== Newspaper Columns ===== */
-.newspaper-columns {
-  margin-top: 2rem;
-}
-
-.newspaper-columns .columns-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.newspaper-columns .column-story {
-  background: var(--background-color);
-
-  break-inside: avoid;
-}
-
-.newspaper-columns .column-story .card-image,
-.newspaper-columns .column-story .card-image-placeholder {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.newspaper-columns .column-story .card-image-placeholder {
-  background: var(--light-gray);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.newspaper-columns .column-story .card-image-placeholder::before {
-  content: "No Image";
-}
-
-.newspaper-columns .column-story .card-content {
-  padding: 1.5rem;
-}
-
-.newspaper-columns .column-story .card-content h3 {
-  font-family: var(--font-main);
-  font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1.2;
-  text-transform: capitalize;
-  margin-bottom: 0.75rem;
-}
-
-.newspaper-columns .column-story .card-content h3 a,
-.newspaper-columns .column-story .card-content h3 span {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.newspaper-columns .column-story .card-content h3 a:hover,
-.newspaper-columns .column-story .card-content h3 span:hover {
-  color: var(--accent-color);
-}
-
-.newspaper-columns .column-story .card-content .card-meta {
-  font-family: var(--font-meta);
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1rem;
-}
-
 /* ===== Footer ===== */
 .site-footer {
   background: var(--primary-color);
@@ -341,42 +143,19 @@ body {
 .site-footer a {
   color: white;
 }
-
 .site-footer .container {
   text-align: center;
 }
-
 .site-footer p {
   margin-bottom: 1rem;
   font-weight: 600;
 }
-
 .site-footer .footer-links a {
   color: white;
   text-decoration: none;
   margin: 0 0.5rem;
   font-weight: 700;
   text-transform: uppercase;
-}
-
-.site-footer .footer-links a:hover {
-  color: white;
-  text-decoration: underline;
-}
-
-/* ===== Publication Badge ===== */
-.publication-badge {
-  display: inline-block;
-  font-family: var(--font-meta);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0.2rem 0.5rem;
-  margin-bottom: 0.5rem;
-  background: var(--accent-color);
-  color: white;
-  border-radius: 2px;
 }
 
 /* ===== Scenario Input / Landing ===== */
@@ -491,9 +270,7 @@ body {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .loading-container .loading-text {
@@ -556,128 +333,1722 @@ body {
   border-color: var(--accent-color);
 }
 
-/* ===== Reset / Try Again Button ===== */
-.reset-bar {
-  text-align: center;
-  padding: 0.5rem 0;
-  border-bottom: 2px solid var(--primary-color);
-  margin-bottom: 0.5rem;
+/* ===================================================================
+   TIMELINE WRAPPER + TOOLBAR
+   =================================================================== */
+
+.timeline-wrapper {
+  min-height: 100vh;
 }
 
-.reset-bar .scenario-label {
+.timeline-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--primary-color);
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--background-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.toolbar-left .scenario-label {
   font-family: var(--font-meta);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 0.75rem;
 }
 
-.reset-bar .scenario-label strong {
+.toolbar-left .scenario-label strong {
   color: var(--primary-color);
   font-weight: 700;
 }
 
-.reset-bar button {
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-btn {
   font-family: var(--font-meta);
   font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.75rem;
   border: 2px solid var(--primary-color);
   background: transparent;
   color: var(--primary-color);
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s;
 }
 
-.reset-bar button:hover {
+.toolbar-btn:hover {
   background: var(--primary-color);
   color: white;
 }
 
-/* ===== Skeleton Shimmer ===== */
-.skeleton {
-  background: linear-gradient(90deg, var(--light-gray) 25%, #e8e8e8 50%, var(--light-gray) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+.toolbar-btn svg {
+  transition: fill 0.2s;
+}
+
+.toolbar-btn:hover svg {
+  fill: white;
+}
+
+.toolbar-btn--primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.toolbar-btn--primary:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.timeline-content {
+  padding: 0 1rem 2rem;
+}
+
+/* ===================================================================
+   MASONRY LAYOUT
+   =================================================================== */
+
+.timeline-mosaic {
+  column-count: 3;
+  column-gap: 1.25rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.mosaic-item {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+  display: inline-block;
+  width: 100%;
+}
+
+/* ===================================================================
+   DARK MODE
+   =================================================================== */
+
+.dark-mode {
+  --page-bg: #15202B;
+}
+
+.dark-mode .timeline-toolbar {
+  background: #1A2734;
+  border-color: #38444D;
+}
+
+.dark-mode .toolbar-left .scenario-label {
+  color: #8899A6;
+}
+
+.dark-mode .toolbar-left .scenario-label strong {
+  color: #FFFFFF;
+}
+
+.dark-mode .toolbar-btn {
+  border-color: #38444D;
+  color: #E7E9EA;
+}
+
+.dark-mode .toolbar-btn:hover {
+  background: #38444D;
+  color: #E7E9EA;
+}
+
+.dark-mode .toolbar-btn svg {
+  fill: #E7E9EA;
+}
+
+.dark-mode .toolbar-btn--primary {
+  background: #1D9BF0;
+  border-color: #1D9BF0;
+  color: #FFFFFF;
+}
+
+.dark-mode .toolbar-btn--primary:hover {
+  background: #1A8CD8;
+  border-color: #1A8CD8;
+}
+
+.dark-mode .timeline-content {
+  background: var(--page-bg);
+}
+
+/* ===================================================================
+   X / TWITTER CARD
+   =================================================================== */
+
+.x-tweet-card {
+  background: #FFFFFF;
+  border: 1px solid #CFD9DE;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  cursor: default;
+  transition: background 0.2s;
+}
+
+.x-tweet-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.x-tweet-author-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.x-tweet-author-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.x-tweet-author-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #0F1419;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.x-tweet-verified {
+  flex-shrink: 0;
+}
+
+.x-tweet-handle {
+  font-size: 15px;
+  color: #536471;
+  line-height: 20px;
+}
+
+.x-tweet-logo {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.x-tweet-content {
+  margin: 8px 0;
+}
+
+.x-tweet-content p {
+  font-size: 15px;
+  line-height: 20px;
+  color: #0F1419;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.x-tweet-timestamp {
+  padding: 4px 0;
+  border-bottom: 1px solid #EFF3F4;
+}
+
+.x-tweet-timestamp span {
+  font-size: 15px;
+  color: #536471;
+}
+
+.x-tweet-engagement {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  margin-top: 4px;
+  gap: 4px;
+}
+
+.x-tweet-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px 0 0;
+  cursor: pointer;
+}
+
+.x-tweet-stat span {
+  font-size: 13px;
+  color: #536471;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.x-tweet-stat:hover svg path {
+  fill: #1D9BF0;
+}
+
+.x-tweet-stat:first-child:hover svg path {
+  fill: #1D9BF0;
+}
+
+.x-tweet-stat:nth-child(2):hover svg path {
+  fill: #00BA7C;
+}
+
+.x-tweet-stat:nth-child(3):hover svg path {
+  fill: #F91880;
+}
+
+.x-tweet-actions {
+  margin-left: auto;
+  padding-right: 0;
+}
+
+/* Dark mode tweets */
+.dark-mode .x-tweet-card {
+  background: #15202B;
+  border-color: #38444D;
+}
+
+.dark-mode .x-tweet-author-name {
+  color: #E7E9EA;
+}
+
+.dark-mode .x-tweet-handle {
+  color: #8899A6;
+}
+
+.dark-mode .x-tweet-content p {
+  color: #E7E9EA;
+}
+
+.dark-mode .x-tweet-timestamp {
+  border-color: #38444D;
+}
+
+.dark-mode .x-tweet-timestamp span {
+  color: #8899A6;
+}
+
+.dark-mode .x-tweet-stat span {
+  color: #8899A6;
+}
+
+.dark-mode .x-tweet-stat svg path {
+  fill: #8899A6;
+}
+
+.dark-mode .x-tweet-logo path {
+  fill: #E7E9EA;
+}
+
+/* ===================================================================
+   REDDIT CARD
+   =================================================================== */
+
+.reddit-card {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  cursor: default;
+  overflow: hidden;
+}
+
+.reddit-vote-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  background: #F8F9FA;
+  gap: 4px;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.reddit-vote-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1A1A1B;
+  line-height: 16px;
+}
+
+.reddit-upvote,
+.reddit-downvote {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.reddit-upvote:hover path {
+  fill: #FF4500;
+}
+
+.reddit-downvote:hover path {
+  fill: #7193FF;
+}
+
+.reddit-content {
+  flex: 1;
+  padding: 8px 8px 4px;
+  min-width: 0;
+}
+
+.reddit-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #787C7E;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.reddit-sub-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.reddit-subreddit {
+  font-weight: 700;
+  color: #1C1C1C;
+  font-size: 12px;
+}
+
+.reddit-dot {
+  color: #787C7E;
+}
+
+.reddit-posted-by {
+  font-size: 12px;
+  color: #787C7E;
+}
+
+.reddit-flair {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  background: #EDEFF1;
+  color: #1A1A1B;
+  padding: 1px 8px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.reddit-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #1A1A1B;
+  line-height: 22px;
+  margin-bottom: 6px;
+  word-wrap: break-word;
+}
+
+.reddit-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  flex-wrap: wrap;
+}
+
+.reddit-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
   border-radius: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #878A8C;
+  cursor: pointer;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
+.reddit-action:hover {
+  background: #F6F7F8;
 }
 
-.skeleton-text {
-  height: 1rem;
-  margin-bottom: 0.5rem;
+/* Dark mode Reddit */
+.dark-mode .reddit-card {
+  background: #1A1A1B;
+  border-color: #343536;
 }
 
-.skeleton-text.wide {
-  width: 80%;
+.dark-mode .reddit-vote-col {
+  background: #161617;
 }
 
-.skeleton-text.medium {
-  width: 60%;
+.dark-mode .reddit-vote-count {
+  color: #D7DADC;
 }
 
-.skeleton-text.narrow {
-  width: 40%;
+.dark-mode .reddit-subreddit {
+  color: #D7DADC;
 }
 
-.skeleton-headline {
-  height: 2.5rem;
-  margin-bottom: 1rem;
+.dark-mode .reddit-title {
+  color: #D7DADC;
 }
 
-.skeleton-image {
+.dark-mode .reddit-flair {
+  background: #272729;
+  color: #D7DADC;
+}
+
+.dark-mode .reddit-action:hover {
+  background: #272729;
+}
+
+/* ===================================================================
+   WIKIPEDIA CARD
+   =================================================================== */
+
+.wiki-card {
+  background: #FFFFFF;
+  border: 1px solid #A7D7F9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: default;
+  overflow: hidden;
+}
+
+.wiki-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #A7D7F9;
+}
+
+.wiki-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wiki-globe {
+  opacity: 0.8;
+}
+
+.wiki-wordmark {
+  font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  letter-spacing: -0.02em;
+}
+
+.wiki-lang {
+  font-size: 10px;
+  color: #54595D;
+  font-style: italic;
+}
+
+.wiki-title {
+  font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #000;
+  padding: 16px 16px 0;
+  line-height: 1.2;
+  border-bottom: 1px solid #A2A9B1;
+  padding-bottom: 4px;
+  margin: 0 16px;
+}
+
+.wiki-title-underline {
+  display: none;
+}
+
+.wiki-notice {
+  padding: 4px 16px 8px;
+  font-size: 12px;
+  color: #54595D;
+  margin: 0 16px;
+}
+
+.wiki-body {
+  padding: 0 16px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #202122;
+}
+
+/* Infobox */
+.wiki-infobox {
+  float: right;
+  width: 220px;
+  margin: 0 0 12px 16px;
+  border: 1px solid #A2A9B1;
+  background: #F8F9FA;
+  font-size: 12px;
+}
+
+.wiki-infobox-header {
+  background: #CCCCFF;
+  padding: 6px 10px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 13px;
+  color: #000;
+}
+
+.wiki-infobox-image-area {
+  padding: 8px;
+  text-align: center;
+}
+
+.wiki-infobox-image-placeholder {
+  width: 100%;
+  height: 100px;
+  background: #EAECF0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #72777D;
+  font-size: 11px;
+}
+
+.wiki-infobox-image-placeholder::after {
+  content: '[Image]';
+}
+
+.wiki-infobox-caption {
+  font-size: 11px;
+  color: #54595D;
+  font-style: italic;
+  padding: 4px 0;
+}
+
+.wiki-infobox-row {
+  display: flex;
+  border-top: 1px solid #A2A9B1;
+}
+
+.wiki-infobox-label {
+  width: 80px;
+  padding: 4px 8px;
+  font-weight: 700;
+  background: #EAECF0;
+  color: #202122;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.wiki-infobox-value {
+  flex: 1;
+  padding: 4px 8px;
+  color: #202122;
+  font-size: 12px;
+}
+
+.wiki-lead {
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.wiki-section {
+  margin-bottom: 12px;
+}
+
+.wiki-section-heading {
+  font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #000;
+  border-bottom: 1px solid #A2A9B1;
+  padding-bottom: 2px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.wiki-edit-link {
+  float: right;
+  font-size: 12px;
+  font-weight: 400;
+  color: #0645AD;
+  font-family: sans-serif;
+  cursor: pointer;
+}
+
+.wiki-section-content {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.wiki-categories {
+  border-top: 1px solid #A2A9B1;
+  padding: 8px 16px;
+  font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.wiki-cat-label {
+  font-weight: 700;
+  color: #202122;
+}
+
+.wiki-cat-tag {
+  color: #0645AD;
+  cursor: pointer;
+}
+
+.wiki-cat-tag:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode Wikipedia */
+.dark-mode .wiki-card {
+  background: #101418;
+  border-color: #2E3338;
+}
+
+.dark-mode .wiki-header {
+  background: #101418;
+  border-color: #2E3338;
+}
+
+.dark-mode .wiki-wordmark {
+  color: #E3E3E3;
+}
+
+.dark-mode .wiki-title {
+  color: #E3E3E3;
+  border-color: #3E4245;
+}
+
+.dark-mode .wiki-notice {
+  color: #8C9298;
+}
+
+.dark-mode .wiki-body {
+  color: #C8CCD1;
+}
+
+.dark-mode .wiki-infobox {
+  border-color: #3E4245;
+  background: #1A1D21;
+}
+
+.dark-mode .wiki-infobox-header {
+  background: #2A2A4A;
+  color: #E3E3E3;
+}
+
+.dark-mode .wiki-infobox-image-placeholder {
+  background: #252729;
+}
+
+.dark-mode .wiki-infobox-label {
+  background: #252729;
+  color: #C8CCD1;
+}
+
+.dark-mode .wiki-infobox-value {
+  color: #C8CCD1;
+}
+
+.dark-mode .wiki-infobox-row {
+  border-color: #3E4245;
+}
+
+.dark-mode .wiki-section-heading {
+  color: #E3E3E3;
+  border-color: #3E4245;
+}
+
+.dark-mode .wiki-edit-link {
+  color: #6B9BFA;
+}
+
+.dark-mode .wiki-categories {
+  border-color: #3E4245;
+}
+
+.dark-mode .wiki-cat-label {
+  color: #C8CCD1;
+}
+
+.dark-mode .wiki-cat-tag {
+  color: #6B9BFA;
+}
+
+/* ===================================================================
+   NEWS CARD — Publication-specific styling
+   =================================================================== */
+
+.news-card {
+  background: var(--nc-bg, #FFFFFF);
+  border: 1px solid var(--nc-border, #E0E0E0);
+  overflow: hidden;
+  font-family: var(--nc-body-font, 'Georgia', serif);
+  cursor: default;
+  transition: box-shadow 0.2s;
+}
+
+.news-card:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.news-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 3px solid var(--nc-accent, #333);
+}
+
+.news-card__pub-name {
+  font-family: var(--nc-body-font);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--nc-accent, #333);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.news-card__timestamp {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  color: #999;
+}
+
+.news-card__image-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.news-card__image {
+  width: 100%;
   height: 180px;
-  margin-bottom: 0.5rem;
+  object-fit: cover;
+  display: block;
 }
 
-/* ===== Responsive: 1024px ===== */
-@media (max-width: 1024px) {
-  .newspaper-columns .columns-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
+.news-card__headline {
+  font-family: var(--nc-headline-font, 'Georgia', serif);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--nc-fg, #1A1A1A);
+  padding: 12px 16px 4px;
+  margin: 0;
+}
 
-  .newspaper-columns .column-story .card-image,
-  .newspaper-columns .column-story .card-image-placeholder {
-    height: 120px;
-  }
+.news-card__subheadline {
+  font-family: var(--nc-body-font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  padding: 4px 16px 16px;
+}
 
-  .newspaper-columns .column-story .card-content {
-    padding: 0.5rem;
-  }
+/* -- Publication-specific overrides -- */
 
-  .newspaper-columns .column-story .card-content h3 {
-    font-size: 0.9rem;
-    line-height: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
+/* NYT */
+.news-card--nyt .news-card__header {
+  border-bottom: 2px solid #121212;
+}
+.news-card--nyt .news-card__pub-name {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 16px;
+}
+.news-card--nyt .news-card__headline {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
 
-  .newspaper-columns .column-story .card-content .card-meta {
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
+/* BBC */
+.news-card--bbc .news-card__header {
+  background: #BB1919;
+  border-bottom: none;
+  padding: 8px 16px;
+}
+.news-card--bbc .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.news-card--bbc .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--bbc .news-card__headline {
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+}
+
+/* Fox News */
+.news-card--fox .news-card__header {
+  background: #003366;
+  border-bottom: 3px solid #B30000;
+  padding: 8px 16px;
+}
+.news-card--fox .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'Arial Black', 'Arial', sans-serif;
+  letter-spacing: 2px;
+}
+.news-card--fox .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--fox .news-card__headline {
+  font-family: 'Arial Black', 'Arial', sans-serif;
+  text-transform: uppercase;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* Guardian */
+.news-card--guardian {
+  background: #052962;
+}
+.news-card--guardian .news-card__header {
+  background: #052962;
+  border-bottom: 1px solid #506991;
+}
+.news-card--guardian .news-card__pub-name {
+  color: #FFE500;
+  font-family: 'Georgia', serif;
+  font-weight: 900;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 15px;
+}
+.news-card--guardian .news-card__timestamp {
+  color: rgba(255,255,255,0.5);
+}
+.news-card--guardian .news-card__headline {
+  color: #FFE500;
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+}
+.news-card--guardian .news-card__subheadline {
+  color: rgba(255,255,255,0.8);
+}
+
+/* CNN */
+.news-card--cnn .news-card__header {
+  background: #CC0000;
+  border-bottom: none;
+  padding: 8px 16px;
+}
+.news-card--cnn .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'CNN Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+.news-card--cnn .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--cnn .news-card__headline {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+}
+
+/* Al Jazeera */
+.news-card--aljazeera .news-card__header {
+  border-bottom: 3px solid #D2A44E;
+}
+.news-card--aljazeera .news-card__pub-name {
+  color: #D2A44E;
+  font-weight: 700;
+}
+
+/* Reuters */
+.news-card--reuters .news-card__header {
+  border-bottom: 3px solid #FF8000;
+}
+.news-card--reuters .news-card__pub-name {
+  color: #FF8000;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0;
+  font-size: 15px;
+}
+.news-card--reuters .news-card__headline {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+}
+
+/* Daily Mail */
+.news-card--dailymail .news-card__header {
+  background: #004DB3;
+  border-bottom: none;
+}
+.news-card--dailymail .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.news-card--dailymail .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--dailymail .news-card__headline {
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+/* Washington Post */
+.news-card--washpost .news-card__header {
+  border-bottom: 1px solid #E9E9E9;
+}
+.news-card--washpost .news-card__pub-name {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  text-transform: none;
+  font-size: 14px;
+  letter-spacing: 0;
+  color: #1A1A1A;
+}
+.news-card--washpost .news-card__headline {
+  font-family: 'Georgia', serif;
+}
+
+/* The Times */
+.news-card--thetimes .news-card__header {
+  border-bottom: 2px solid #1D1D1B;
+}
+.news-card--thetimes .news-card__pub-name {
+  font-family: 'Georgia', serif;
+  color: #1D1D1B;
+  text-transform: none;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+/* Sky News */
+.news-card--skynews .news-card__header {
+  background: #9E0000;
+  border-bottom: none;
+}
+.news-card--skynews .news-card__pub-name {
+  color: #FFFFFF;
+  font-weight: 800;
+}
+.news-card--skynews .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+
+/* New York Post */
+.news-card--nypost .news-card__header {
+  background: #CF1920;
+  border-bottom: none;
+}
+.news-card--nypost .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+.news-card--nypost .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--nypost .news-card__headline {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+/* The Onion */
+.news-card--theonion .news-card__header {
+  background: #1A6826;
+  border-bottom: none;
+}
+.news-card--theonion .news-card__pub-name {
+  color: #FFFFFF;
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  font-style: italic;
+}
+.news-card--theonion .news-card__timestamp {
+  color: rgba(255,255,255,0.7);
+}
+.news-card--theonion .news-card__headline {
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+}
+
+/* Le Monde */
+.news-card--lemonde .news-card__header {
+  border-bottom: 2px solid #1A1A1A;
+}
+.news-card--lemonde .news-card__pub-name {
+  font-family: 'Georgia', serif;
+  color: #1A1A1A;
+  text-transform: none;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+/* Dark mode news cards — just lighten text on generic ones */
+.dark-mode .news-card {
+  border-color: #38444D;
+}
+
+.dark-mode .news-card--generic {
+  background: #1A2734;
+}
+
+.dark-mode .news-card--generic .news-card__headline {
+  color: #E7E9EA;
+}
+
+.dark-mode .news-card--generic .news-card__subheadline {
+  color: #8899A6;
+}
+
+.dark-mode .news-card--generic .news-card__pub-name {
+  color: #E7E9EA;
+}
+
+.dark-mode .news-card--generic .news-card__header {
+  border-color: #38444D;
+}
+
+/* ===================================================================
+   GOOGLE SEARCH RESULTS CARD
+   =================================================================== */
+
+.google-card {
+  background: #FFFFFF;
+  border: 1px solid #DFE1E5;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: arial, sans-serif;
+  cursor: default;
+}
+
+.google-search-bar {
+  padding: 12px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.google-logo {
+  flex-shrink: 0;
+}
+
+.google-search-input {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border: 1px solid #DFE1E5;
+  border-radius: 24px;
+  background: #FFFFFF;
+  min-width: 0;
+}
+
+.google-query {
+  font-size: 14px;
+  color: #202124;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-search-icon {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.google-results-meta {
+  padding: 0 16px 8px;
+  font-size: 12px;
+  color: #70757A;
+}
+
+.google-results-list {
+  padding: 0 16px 16px;
+}
+
+.google-result {
+  padding: 12px 0;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.google-result:last-child {
+  border-bottom: none;
+}
+
+.google-result-url {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.google-result-favicon {
+  flex-shrink: 0;
+}
+
+.google-favicon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #F1F3F4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4285F4;
+}
+
+.google-result-url-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.google-result-site {
+  font-size: 12px;
+  color: #202124;
+  line-height: 18px;
+}
+
+.google-result-path {
+  font-size: 12px;
+  color: #4D5156;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-result-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: #1A0DAB;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.google-result-title:hover {
+  text-decoration: underline;
+}
+
+.google-result-snippet {
+  font-size: 14px;
+  color: #4D5156;
+  line-height: 1.5;
+}
+
+/* Dark mode Google */
+.dark-mode .google-card {
+  background: #202124;
+  border-color: #3C4043;
+}
+
+.dark-mode .google-search-input {
+  background: #303134;
+  border-color: #5F6368;
+}
+
+.dark-mode .google-query {
+  color: #E8EAED;
+}
+
+.dark-mode .google-results-meta {
+  color: #9AA0A6;
+}
+
+.dark-mode .google-result {
+  border-color: #3C4043;
+}
+
+.dark-mode .google-result-site {
+  color: #BDC1C6;
+}
+
+.dark-mode .google-result-path {
+  color: #969BA1;
+}
+
+.dark-mode .google-result-title {
+  color: #8AB4F8;
+}
+
+.dark-mode .google-result-snippet {
+  color: #BDC1C6;
+}
+
+.dark-mode .google-favicon-circle {
+  background: #303134;
+  color: #8AB4F8;
+}
+
+/* ===================================================================
+   YOUTUBE CARD
+   =================================================================== */
+
+.yt-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  cursor: default;
+}
+
+.yt-thumbnail {
+  position: relative;
+  background: #0F0F0F;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.yt-thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-play-btn {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.yt-card:hover .yt-play-btn {
+  opacity: 1;
+}
+
+.yt-duration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.yt-info {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.yt-channel-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.yt-text-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0F0F0F;
+  line-height: 20px;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-channel-name {
+  font-size: 12px;
+  color: #606060;
+  line-height: 18px;
+}
+
+.yt-stats {
+  font-size: 12px;
+  color: #606060;
+  line-height: 18px;
+}
+
+/* Dark mode YouTube */
+.dark-mode .yt-card {
+  background: #0F0F0F;
+}
+
+.dark-mode .yt-title {
+  color: #F1F1F1;
+}
+
+.dark-mode .yt-channel-name,
+.dark-mode .yt-stats {
+  color: #AAAAAA;
+}
+
+/* ===================================================================
+   FACEBOOK CARD
+   =================================================================== */
+
+.fb-card {
+  background: #FFFFFF;
+  border: 1px solid #DADDE1;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  cursor: default;
+  overflow: hidden;
+}
+
+.fb-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px 0;
+}
+
+.fb-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1877F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.fb-header-text {
+  flex: 1;
+}
+
+.fb-sharer-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #050505;
+  display: block;
+  line-height: 20px;
+}
+
+.fb-timestamp-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fb-timestamp {
+  font-size: 13px;
+  color: #65676B;
+}
+
+.fb-privacy {
+  font-size: 13px;
+  color: #65676B;
+}
+
+.fb-globe {
+  opacity: 0.7;
+}
+
+.fb-more {
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 4px;
+}
+
+.fb-sharer-comment {
+  padding: 8px 16px 12px;
+  font-size: 15px;
+  color: #050505;
+  line-height: 20px;
+}
+
+.fb-shared-article {
+  border: 1px solid #DADDE1;
+  margin: 0 16px 12px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fb-shared-image-area {
+  width: 100%;
+}
+
+.fb-shared-image-placeholder {
+  width: 100%;
+  height: 120px;
+  background: #F0F2F5;
+}
+
+.fb-shared-info {
+  padding: 10px 12px;
+  background: #F0F2F5;
+}
+
+.fb-shared-source {
+  font-size: 12px;
+  color: #65676B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.fb-shared-headline {
+  font-size: 16px;
+  font-weight: 600;
+  color: #050505;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+.fb-shared-desc {
+  font-size: 14px;
+  color: #65676B;
+  line-height: 18px;
+}
+
+.fb-reactions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid #DADDE1;
+}
+
+.fb-reaction-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.fb-react-emoji {
+  font-size: 16px;
+  margin-right: -2px;
+}
+
+.fb-reaction-count {
+  font-size: 15px;
+  color: #65676B;
+  margin-left: 8px;
+}
+
+.fb-engagement-counts {
+  font-size: 15px;
+  color: #65676B;
+}
+
+.fb-action-bar {
+  display: flex;
+  padding: 4px 16px;
+  border-bottom: 1px solid #DADDE1;
+}
+
+.fb-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #65676B;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.fb-action-btn:hover {
+  background: #F0F2F5;
+}
+
+.fb-comment-section {
+  padding: 12px 16px;
+}
+
+.fb-comment {
+  display: flex;
+  gap: 8px;
+}
+
+.fb-comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E4E6EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #65676B;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.fb-comment-body {
+  background: #F0F2F5;
+  border-radius: 18px;
+  padding: 8px 12px;
+  flex: 1;
+}
+
+.fb-comment-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: #050505;
+  display: block;
+}
+
+.fb-comment-text {
+  font-size: 15px;
+  color: #050505;
+  line-height: 20px;
+}
+
+/* Dark mode Facebook */
+.dark-mode .fb-card {
+  background: #242526;
+  border-color: #3A3B3C;
+}
+
+.dark-mode .fb-sharer-name {
+  color: #E4E6EB;
+}
+
+.dark-mode .fb-timestamp,
+.dark-mode .fb-privacy {
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-sharer-comment {
+  color: #E4E6EB;
+}
+
+.dark-mode .fb-shared-article {
+  border-color: #3A3B3C;
+}
+
+.dark-mode .fb-shared-info {
+  background: #3A3B3C;
+}
+
+.dark-mode .fb-shared-source {
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-shared-headline {
+  color: #E4E6EB;
+}
+
+.dark-mode .fb-shared-desc {
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-shared-image-placeholder {
+  background: #3A3B3C;
+}
+
+.dark-mode .fb-reactions-bar {
+  border-color: #3A3B3C;
+}
+
+.dark-mode .fb-reaction-count,
+.dark-mode .fb-engagement-counts {
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-action-bar {
+  border-color: #3A3B3C;
+}
+
+.dark-mode .fb-action-btn {
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-action-btn:hover {
+  background: #3A3B3C;
+}
+
+.dark-mode .fb-comment-body {
+  background: #3A3B3C;
+}
+
+.dark-mode .fb-comment-author {
+  color: #E4E6EB;
+}
+
+.dark-mode .fb-comment-text {
+  color: #E4E6EB;
+}
+
+.dark-mode .fb-comment-avatar {
+  background: #3A3B3C;
+  color: #B0B3B8;
+}
+
+.dark-mode .fb-more path {
+  fill: #B0B3B8;
+}
+
+/* ===================================================================
+   RESPONSIVE BREAKPOINTS
+   =================================================================== */
+
+@media (max-width: 1200px) {
+  .timeline-mosaic {
+    column-count: 2;
   }
 }
 
-/* ===== Responsive: 768px ===== */
 @media (max-width: 768px) {
-  .featured-article .main-story {
-    text-align: left;
-  }
-
-
   .site-header .container {
     flex-direction: column;
     gap: 1rem;
@@ -694,8 +2065,6 @@ body {
 
   .site-header .site-icon {
     display: none;
-    width: 50px;
-    height: 50px;
   }
 
   .site-title {
@@ -718,78 +2087,13 @@ body {
     font-size: 0.8rem;
   }
 
-  .newspaper-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .side-cards {
-    order: 1;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 100%;
-    overflow-x: scroll;
-    padding-bottom: 1rem;
-  }
-
-  .side-cards .side-card {
-    flex: 0 0 200px;
-  }
-
-  .side-cards .side-card .card-image,
-  .side-cards .side-card .card-image-placeholder {
-    height: 100px;
-  }
-
-  .side-cards .side-card .card-content {
-    padding: 0.8rem;
-  }
-
-  .side-cards .side-card .card-content h3 {
-    font-size: 1rem;
-  }
-
-  .featured-article {
-    order: 0;
-  }
-
-  .featured-article .main-story h1 {
-    font-size: 2rem;
-  }
-
-  .featured-article .main-story .story-image {
-    height: 200px;
-  }
-
-  .featured-article .main-story .story-image.taller {
-    height: 200px;
-  }
-
-  .columns-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .column-story .card-image,
-  .column-story .card-image-placeholder {
-    height: 150px;
-  }
-
-  .column-story .card-content {
-    padding: 1rem;
-  }
-
-  .column-story .card-content h3 {
-    font-size: 2rem;
+  .timeline-mosaic {
+    column-count: 1;
   }
 
   .main-content {
     padding: 1rem 15px;
     padding-top: 0rem;
-  }
-
-  .container {
-    padding: 0 15px;
   }
 
   .landing-container h1 {
@@ -808,31 +2112,31 @@ body {
   .scenario-form input[type="text"]:focus {
     border-color: var(--accent-color);
   }
+
+  .timeline-toolbar {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .toolbar-right {
+    justify-content: center;
+  }
+
+  /* Wiki infobox stacks on mobile */
+  .wiki-infobox {
+    float: none;
+    width: 100%;
+    margin: 0 0 12px 0;
+  }
+
+  /* Google search bar compact */
+  .google-logo {
+    display: none;
+  }
 }
 
-/* ===== Responsive: 480px ===== */
 @media (max-width: 480px) {
-  .featured-article .main-story h1 {
-    font-size: 2rem;
-  }
-
-  .side-cards .side-card {
-    flex: 0 0 180px;
-  }
-
-  .side-cards .side-card .card-content h3 {
-    font-size: 1.5rem;
-  }
-
-  .column-story .card-content h3 {
-    font-size: 1.5rem;
-  }
-
-  .column-story .card-image,
-  .column-story .card-image-placeholder {
-    height: 120px;
-  }
-
   .landing-container h1 {
     font-size: 1.8rem;
   }
@@ -840,5 +2144,13 @@ body {
   .landing-container .landing-icon {
     width: 80px;
     height: 80px;
+  }
+
+  .news-card__headline {
+    font-size: 18px;
+  }
+
+  .x-tweet-content p {
+    font-size: 14px;
   }
 }

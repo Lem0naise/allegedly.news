@@ -3,38 +3,165 @@ import { NextResponse } from "next/server";
 // ---- Configuration ----
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "x-ai/grok-4-fast";
-// "openai/gpt-4o";
 
-const SYSTEM_PROMPT = `You are a satirical newspaper headline generator. Given an alternative-history scenario, you must generate a fake newspaper front page with articles from different real-world publications, as if that alternative-history was entirely true.
+// ---- PASS 1 PROMPT: News headlines + Social media ----
+const PASS1_SYSTEM_PROMPT = `You are an alternative-history content generator. Given a scenario, generate a realistic collection of news headlines, tweets, Reddit posts, and a Facebook post — as if this scenario really happened.
 
-INSTRUCTION: Do not just repeat the user's scenario in every headline. Instead, simulate the DOMINO EFFECT. If the scenario happens, what are the secondary consequences? 
-- What are the scandalous reactions from relevant people? 
-- Are there protests? 
-- Is the stock market crashing? 
-- What is the 'hot take' from a tabloid vs the 'analysis' from a broadsheet?
-- At least 3 of the 7 articles should be about CONSEQUENCES or REACTIONS, not the event itself.
+CORE PRINCIPLE: Simulate the DOMINO EFFECT. Don't just repeat the scenario. Generate secondary consequences, reactions, scandals, protests, market reactions, hot takes, viral moments.
 
-IMPORTANT RULES:
-1. Return ONLY valid JSON, no markdown, no code fences, no extra text.
-2. Generate exactly 7 articles from different publications. Use a mix of relevant country's tabloids and broadsheets (and some foreign media if it would be international news) CRITICAL GEOGRAPHY RULE: You must analyze the scenario and choose publications native to the country where the scenario takes place (e.g., for a USA scenario, use NY Post, Fox News, Washington Post; for a French scenario, use Le Figaro, Libération, Le Parisien). Include 3 or 4 major foreign/international papers if the event has global impact.
-3. Always use a mix of low-brow, sensationalist tabloids and high-brow, serious broadsheets to show different political biases. 
-4. Each article must match the editorial voice and style of its publication. Tabloid headlines should be punchy, dramatic, and use wordplay. Broadsheet headlines should be measured and authoritative. 
-5. Foreign publications should have their headlines and text written in English.
-6. For the 'image_search_query' field: Provide a high-quality Google Image search string. Since we are using a real-world search API, provide a descriptive "news photo" query that captures the mood of the scenario, but will return real-life images.
+Generate ALL of the following content in a single JSON response:
 
-Return this exact JSON structure:
+## NEWS ARTICLES (exactly 5)
+- Use real-world publications from this EXACT list (pick 5 that fit the scenario's geography):
+  NYT, BBC, Fox News, The Guardian, CNN, Al Jazeera, Reuters, Daily Mail, Washington Post, The Times, Sky News, New York Post, The Onion, Le Monde
+- Mix tabloids and broadsheets. Match each publication's real editorial voice, bias, and writing style.
+- Tabloid headlines: punchy, dramatic, wordplay. Broadsheet headlines: measured, authoritative.
+- Foreign publications write in English.
+- CRITICAL GEOGRAPHY: Choose publications native to the scenario's country. Include 1-2 international papers if it's global news.
+
+## TWEETS (exactly 4)
+- From real public figures who would plausibly comment (politicians, journalists, celebrities, business leaders).
+- Each tweet must sound EXACTLY like that person writes — capture their vocabulary, tone, use of caps, punctuation quirks.
+- Include a mix: one establishment/official response, one hot take/pundit, one sarcastic/witty comment, one emotional/viral reaction.
+- Tweets should be 1-3 sentences max, like real tweets. Some can use ALL CAPS for emphasis.
+- Pick a verified status for each (most public figures are verified).
+
+## REDDIT POSTS (exactly 3)
+- Pick real subreddits that would discuss this (e.g., r/worldnews, r/politics, r/unitedkingdom, r/news, r/OutOfTheLoop, r/AskReddit, etc.)
+- Reddit titles should sound like real Reddit — sometimes editorialized, sometimes a link title, sometimes a question.
+- Include realistic upvote counts (big news = 40k-120k, niche = 2k-15k).
+- Comment counts should be realistic too (big threads = 3000-15000, smaller = 200-2000).
+
+## FACEBOOK POST (exactly 1)
+- A shared news article card — someone sharing a news link with their own commentary.
+- The sharer should be a realistic fictional person name.
+- Include a brief personal comment above the shared link (1-2 sentences, casual Facebook voice).
+- The shared article should have a headline and source publication.
+- Include realistic reaction counts and a top comment from another fictional person.
+
+## IMAGE SEARCH
+- Provide a Google Image search query that would return relevant real-world photos for this scenario.
+
+Return this EXACT JSON structure:
 {
-  "image_search_query": "Entity Name",
+  "image_search_query": "descriptive search for real news photos related to the scenario",
   "articles": [
     {
       "publication": "PUBLICATION NAME",
-      "headline": "PUNCHY HEADLINE HERE",
-      "subheadline": "For the First article, it should be six sentences. For all the rest, it should be a short 1-2 sentences. It must sound exactly like the actual publication would write it, capturing their political bias and stylistic tone perfectly."
+      "headline": "HEADLINE TEXT",
+      "subheadline": "1-3 sentence excerpt in the publication's voice and bias.",
+      "timestamp": "relative time like '2 hours ago' or 'Yesterday at 14:32'"
+    }
+  ],
+  "tweets": [
+    {
+      "author_name": "Real Person Name",
+      "author_handle": "realhandle",
+      "verified": true,
+      "content": "Tweet text here. Keep it authentic to how this person actually tweets.",
+      "timestamp": "relative time like '4h' or '12m'",
+      "retweets": 15400,
+      "likes": 89200,
+      "views": 2400000,
+      "replies": 8900
+    }
+  ],
+  "reddit_posts": [
+    {
+      "subreddit": "worldnews",
+      "title": "Reddit post title",
+      "upvotes": 87400,
+      "comment_count": 12300,
+      "author": "realistic_reddit_username",
+      "timestamp": "5 hours ago",
+      "flair": "optional flair text or null"
+    }
+  ],
+  "facebook_post": {
+    "sharer_name": "Fictional Person Name",
+    "sharer_comment": "Their personal take on the shared article",
+    "shared_headline": "The headline of the article they're sharing",
+    "shared_source": "Publication Name",
+    "shared_description": "Brief article description/preview text",
+    "reactions": { "like": 234, "love": 45, "wow": 89, "angry": 12, "sad": 5, "haha": 23 },
+    "shares": 67,
+    "top_comment_author": "Another Fictional Person",
+    "top_comment": "A realistic Facebook comment",
+    "timestamp": "3 hours ago"
+  }
+}`;
+
+// ---- PASS 2 PROMPT: Wikipedia + Google + YouTube ----
+const PASS2_SYSTEM_PROMPT = `You are an alternative-history content generator. You will be given a scenario AND a summary of already-generated news/social content about it. Generate Wikipedia, Google search results, and YouTube video cards as if this event really happened.
+
+## WIKIPEDIA ARTICLE (exactly 1)
+- Write a Wikipedia-style article about the key event or person central to this scenario.
+- Include an infobox with relevant structured data (dates, key figures, locations, outcomes).
+- Write a lead paragraph (2-3 sentences) in neutral, encyclopedic Wikipedia tone.
+- Include a "Background" section (2-3 sentences).
+- Include a "Reactions" or "Aftermath" section (2-3 sentences).
+- The article should read like a real Wikipedia article — neutral point of view, formal, well-sourced feel.
+
+## GOOGLE SEARCH RESULTS (exactly 3)
+- Simulate what Google would show if someone searched for this event.
+- Each result has a URL, title, and description snippet.
+- Mix of news sites, Wikipedia, and other sources.
+- The search query should be what a normal person would type (plain language, not formal).
+
+## YOUTUBE VIDEOS (exactly 1)
+- Simulate YouTube video cards that would appear about this event.
+- Include channel names (use real channels that would cover this: BBC News, CNN, Vice, Vox, Sky News, etc.)
+- Include realistic view counts, upload timestamps.
+- Video titles should be YouTube-style: slightly clickbaity but plausible for news channels.
+
+Return this EXACT JSON structure:
+{
+  "wikipedia": {
+    "title": "Article Title",
+    "infobox": {
+      "type": "Event or Person or Organization etc.",
+      "image_caption": "A brief caption describing what image would appear",
+      "fields": [
+        { "label": "Date", "value": "The date" },
+        { "label": "Location", "value": "The location" }
+      ]
+    },
+    "lead": "The opening paragraph in encyclopedic tone...",
+    "sections": [
+      {
+        "heading": "Background",
+        "content": "Section content..."
+      },
+      {
+        "heading": "Reactions",
+        "content": "Section content..."
+      }
+    ],
+    "categories": ["Category 1", "Category 2", "Category 3"]
+  },
+  "google_results": {
+    "query": "what a normal person would search",
+    "results": [
+      {
+        "title": "Result title as it appears on Google",
+        "url": "https://example.com/realistic-url-path",
+        "snippet": "The description snippet shown under the result, 1-2 sentences."
+      }
+    ]
+  },
+  "youtube_videos": [
+    {
+      "title": "Video Title - YouTube Style",
+      "channel": "Channel Name",
+      "views": "2.4M views",
+      "timestamp": "6 hours ago",
+      "duration": "12:34",
+      "description_preview": "Brief video description preview text"
     }
   ]
 }`;
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 // ---- Serper.dev Google Image Search ----
 async function fetchSerperImages(query, count = 7) {
@@ -61,94 +188,75 @@ async function fetchSerperImages(query, count = 7) {
 
     const data = await res.json();
 
-    // Check if we got valid image results back
     if (!data.images || !Array.isArray(data.images)) {
       return [];
     }
 
-    const validImages = data.images.filter(img => {
+    const validImages = data.images.filter((img) => {
       const url = img.imageUrl.toLowerCase();
       return (
-        !url.includes('lookaside.instagram.com') &&
-        !url.includes('scontent.cdninstagram.com') &&
-        !url.includes('lookaside.fbsbx.com') &&
+        !url.includes("lookaside.instagram.com") &&
+        !url.includes("scontent.cdninstagram.com") &&
+        !url.includes("lookaside.fbsbx.com") &&
         !url.includes("www.tiktok.com") &&
-        !url.includes('fbcdn.net') // Throws out Facebook's strict hotlink blockers too
+        !url.includes("fbcdn.net")
       );
     });
 
-    // Extract just the image URLs, limited to the count we need
-    return validImages.slice(0, count).map(img => img.imageUrl);
-
+    return validImages.slice(0, count).map((img) => img.imageUrl);
   } catch (err) {
     console.error("Serper fetch failed:", err.message);
     return [];
   }
 }
 
-// ---- Wikimedia Commons image search ----
-async function fetchWikimediaImages(query, count = 5) {
+// ---- Call OpenRouter LLM ----
+async function callLLM(systemPrompt, userMessage, maxTokens = 3000) {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+
+  const res = await fetch(OPENROUTER_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://allegedly.news",
+      "X-Title": "Allegedly News",
+    },
+    body: JSON.stringify({
+      model: OPENROUTER_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.9,
+      max_tokens: maxTokens,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("OpenRouter error:", res.status, errText);
+    throw new Error(`LLM service error (${res.status})`);
+  }
+
+  const json = await res.json();
+  const content = json?.choices?.[0]?.message?.content;
+
+  if (!content) {
+    throw new Error("LLM returned an empty response");
+  }
+
   try {
-    const params = new URLSearchParams({
-      action: "query",
-      generator: "search",
-      gsrnamespace: "6", // File namespace
-      gsrsearch: query,
-      gsrlimit: String(count),
-      prop: "imageinfo",
-      iiprop: "url|mime",
-      iiurlwidth: "800",
-      format: "json",
-      origin: "*",
-    });
-
-    const res = await fetch(
-      `https://commons.wikimedia.org/w/api.php?${params.toString()}`,
-      {
-        headers: {
-          "User-Agent": "AllegedlyNews/1.0 (https://allegedly.news)",
-        },
-      }
-    );
-
-    if (!res.ok) {
-      console.error("Wikimedia API error:", res.status);
-      return [];
-    }
-
-    const data = await res.json();
-    const pages = data?.query?.pages;
-
-    if (!pages) return [];
-
-    const imageUrls = [];
-    for (const page of Object.values(pages)) {
-      const info = page?.imageinfo?.[0];
-      if (!info) continue;
-
-      // Only use actual images (skip SVG, PDF, etc.)
-      const mime = info.mime || "";
-      if (
-        mime.startsWith("image/") &&
-        !mime.includes("svg") &&
-        !mime.includes("tiff")
-      ) {
-        // Prefer the thumbnail (resized) URL for performance
-        const url = info.thumburl || info.url;
-        if (url) imageUrls.push(url);
-      }
-    }
-
-    return imageUrls;
-  } catch (err) {
-    console.error("Wikimedia fetch failed:", err.message);
-    return [];
+    return JSON.parse(content);
+  } catch {
+    console.error("Failed to parse LLM JSON:", content.substring(0, 500));
+    throw new Error("LLM returned malformed JSON");
   }
 }
 
 // ---- Main handler ----
 export async function POST(request) {
-  // Validate API key exists
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
@@ -157,7 +265,6 @@ export async function POST(request) {
     );
   }
 
-  // Parse request body
   let body;
   try {
     body = await request.json();
@@ -176,99 +283,60 @@ export async function POST(request) {
     );
   }
 
-  // ---- Step A: Call OpenRouter LLM ----
-  let llmData;
+  const trimmedScenario = scenario.trim();
+
   try {
-    const llmRes = await fetch(OPENROUTER_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://allegedly.news",
-        "X-Title": "Allegedly News",
-      },
-      body: JSON.stringify({
-        model: OPENROUTER_MODEL,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          {
-            role: "user",
-            content: `Generate a newspaper front page for this scenario: "${scenario.trim()}"`,
-          },
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.9,
-        max_tokens: 2000,
-      }),
+    // ---- PASS 1: News + Social Media ----
+    const pass1Data = await callLLM(
+      PASS1_SYSTEM_PROMPT,
+      `Generate content for this alternative-history scenario: "${trimmedScenario}"`,
+      4000
+    );
+
+    // Validate pass 1
+    if (!pass1Data.articles || !Array.isArray(pass1Data.articles)) {
+      throw new Error("Pass 1: missing articles array");
+    }
+
+    // ---- PASS 2: Wikipedia + Google + YouTube (in parallel with image fetch) ----
+    const pass2Summary = `Scenario: "${trimmedScenario}"\n\nAlready generated headlines: ${pass1Data.articles
+      .map((a) => `${a.publication}: "${a.headline}"`)
+      .join("; ")}`;
+
+    const [pass2Data, imageUrls] = await Promise.all([
+      callLLM(
+        PASS2_SYSTEM_PROMPT,
+        `Generate Wikipedia, Google results, and YouTube content for this scenario.\n\n${pass2Summary}`,
+        3000
+      ),
+      fetchSerperImages(
+        pass1Data.image_search_query || trimmedScenario,
+        7
+      ),
+    ]);
+
+    // ---- Assign images to news articles ----
+    const articles = pass1Data.articles.map((article, i) => ({
+      ...article,
+      image_url: imageUrls[i % Math.max(imageUrls.length, 1)] || null,
+    }));
+
+    // ---- Compile full response ----
+    return NextResponse.json({
+      articles,
+      tweets: pass1Data.tweets || [],
+      reddit_posts: pass1Data.reddit_posts || [],
+      facebook_post: pass1Data.facebook_post || null,
+      wikipedia: pass2Data.wikipedia || null,
+      google_results: pass2Data.google_results || null,
+      youtube_videos: pass2Data.youtube_videos || [],
+      image_urls: imageUrls,
     });
-
-    if (!llmRes.ok) {
-      const errText = await llmRes.text();
-      console.error("OpenRouter error:", llmRes.status, errText);
-      return NextResponse.json(
-        {
-          error: `LLM service error (${llmRes.status}). Please try again.`,
-        },
-        { status: 502 }
-      );
-    }
-
-    const llmJson = await llmRes.json();
-    const content = llmJson?.choices?.[0]?.message?.content;
-
-    if (!content) {
-      return NextResponse.json(
-        { error: "LLM returned an empty response" },
-        { status: 502 }
-      );
-    }
-
-    // Parse the LLM's JSON output
-    try {
-      llmData = JSON.parse(content);
-    } catch {
-      console.error("Failed to parse LLM JSON:", content.substring(0, 500));
-      return NextResponse.json(
-        { error: "LLM returned malformed JSON. Please try again." },
-        { status: 502 }
-      );
-    }
-
-    // Validate structure
-    if (!llmData.articles || !Array.isArray(llmData.articles)) {
-      return NextResponse.json(
-        { error: "LLM response missing articles array" },
-        { status: 502 }
-      );
-    }
   } catch (err) {
-    console.error("LLM call failed:", err.message);
+    console.error("Generation failed:", err.message);
     return NextResponse.json(
-      { error: "Failed to contact LLM service. Please try again." },
+      { error: err.message || "Failed to generate content. Please try again." },
       { status: 502 }
     );
   }
-
-  // // ---- Step B: Fetch images from Wikimedia ----
-  // const imageQuery = llmData.image_search_query || scenario.trim();
-  // const imageUrls = await fetchWikimediaImages(
-  //   imageQuery,
-  //   llmData.articles.length
-  // );
-
-  // ---- Step B: Fetch exactly 7 images from Serper using the master query ----
-  // Fallback to the raw scenario text if the LLM forgot to generate the master query
-  const imageQuery = llmData.master_image_search_query || scenario.trim();
-  const imageUrls = await fetchSerperImages(imageQuery, 7);
-
-  // Assign images to articles (round-robin if fewer images than articles)
-  const articles = llmData.articles.map((article, i) => ({
-    publication: article.publication || "Unknown",
-    headline: article.headline || "Untitled",
-    subheadline: article.subheadline || "",
-    image_url: imageUrls[i % Math.max(imageUrls.length, 1)] || null,
-  }));
-
-  // ---- Step C: Return compiled response ----
-  return NextResponse.json({ articles });
 }

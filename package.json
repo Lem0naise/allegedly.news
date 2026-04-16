@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "html2canvas-pro": "^2.0.2",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
