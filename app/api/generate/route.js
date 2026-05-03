@@ -4,89 +4,175 @@ import { NextResponse } from "next/server";
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = "x-ai/grok-4-fast";
 
-// ---- PASS 1 PROMPT: News headlines + Social media ----
-const PASS1_SYSTEM_PROMPT = `You are an alternative-history content generator. Given a scenario, generate a realistic collection of news headlines, tweets, Reddit posts, and a Facebook post — as if this scenario really happened.
+// ---- PASS 1 PROMPT: News headlines + Social media + Op-Eds + Developments ----
+const PASS1_SYSTEM_PROMPT = `You are an alternative-history content generator. Given a scenario, generate a realistic, dynamic, and deeply varied media timeline as if this scenario really happened.
 
-CORE PRINCIPLE: Simulate the DOMINO EFFECT. Don't just repeat the scenario. Generate secondary consequences, reactions, scandals, protests, market reactions, hot takes, viral moments.
+CRITICAL RULE: YOU MUST GENERATE A CHRONOLOGICAL SEQUENCE OF EVENTS. Events should unfold over hours/days — NOT all be the same moment. The timeline must feel like a real breaking news cycle with cause-and-effect.
 
-Generate ALL of the following content in a single JSON response:
+## STEP 1: FIRST, IMAGINE THE EVENT CHRONOLOGY
+Before generating content, mentally outline 6-8 distinct events that would unfold:
+- Event 1: The initial trigger (announcement, incident, result, decision)
+- Event 2-3: Immediate reactions (official statements, denials, confirmations)
+- Event 4: Escalation (a key figure steps down, a new candidate enters, protests begin)
+- Event 5: Polling data / internal reactions (leaked memos, poll results, factional splits)
+- Event 6: Major development (resignation, endorsement, dramatic reversal)
+- Event 7-8: Fallout and analysis (what it means, historical context, long-term implications)
 
-## NEWS ARTICLES (exactly 5)
-- Use real-world publications from this EXACT list (pick 5 that fit the scenario's geography):
-  NYT, BBC, Fox News, The Guardian, CNN, Al Jazeera, Reuters, Daily Mail, Washington Post, The Times, Sky News, New York Post, The Onion, Le Monde
-- Mix tabloids and broadsheets. Match each publication's real editorial voice, bias, and writing style.
-- Tabloid headlines: punchy, dramatic, wordplay. Broadsheet headlines: measured, authoritative.
-- Foreign publications write in English.
-- CRITICAL GEOGRAPHY: Choose publications native to the scenario's country. Include 1-2 international papers if it's global news.
+CRITICAL: Each piece of content must cover a DIFFERENT event from this chronology. NEVER duplicate an event. NEVER write the same story twice.
 
-## TWEETS (exactly 4)
-- From real public figures who would plausibly comment (politicians, journalists, celebrities, business leaders).
-- Each tweet must sound EXACTLY like that person writes — capture their vocabulary, tone, use of caps, punctuation quirks.
-- Include a mix: one establishment/official response, one hot take/pundit, one sarcastic/witty comment, one emotional/viral reaction.
-- Tweets should be 1-3 sentences max, like real tweets. Some can use ALL CAPS for emphasis.
-- Pick a verified status for each (most public figures are verified).
+## STEP 2: GENERATE THE FOLLOWING CONTENT
 
-## REDDIT POSTS (exactly 3)
-- Pick real subreddits that would discuss this (e.g., r/worldnews, r/politics, r/unitedkingdom, r/news, r/OutOfTheLoop, r/AskReddit, etc.)
-- Reddit titles should sound like real Reddit — sometimes editorialized, sometimes a link title, sometimes a question.
-- Include realistic upvote counts (big news = 40k-120k, niche = 2k-15k).
-- Comment counts should be realistic too (big threads = 3000-15000, smaller = 200-2000).
+### NEWS ARTICLES (exactly 8 — EACH MUST BE ABOUT A DIFFERENT EVENT/ANGLE)
+Pick from: NYT, BBC, Fox News, The Guardian, CNN, Al Jazeera, Reuters, Daily Mail, Washington Post, The Times, Sky News, New York Post, The Onion, Le Monde, The Economist, Politico, The Spectator, Der Spiegel, El Pais
 
-## FACEBOOK POST (exactly 1)
-- A shared news article card — someone sharing a news link with their own commentary.
-- The sharer should be a realistic fictional person name.
-- Include a brief personal comment above the shared link (1-2 sentences, casual Facebook voice).
-- The shared article should have a headline and source publication.
-- Include realistic reaction counts and a top comment from another fictional person.
+Each article MUST have a distinct article_type to ensure variety:
+- "breaking_news" — Initial report of a fresh development, urgent tone, new information
+- "analysis" — Deep-dive analysis by a political correspondent, "what this means" tone
+- "feature" — Longer-form piece with colour, quotes from insiders, narrative feel
+- "op_ed" — Opinion/editorial arguing a specific position, clearly taking sides
+- "wire_report" — Dry, factual Reuters/AP-style straight news, no commentary
+- "foreign_reaction" — How other countries/capitals are reacting (e.g. "Brussels / Washington / Moscow responds")
+- "tabloid_take" — Punchy, dramatic, personality-driven tabloid angle with wordplay
+- "poll_result" — Reporting on new polling data showing who's leading/trailing
+- "satire" — The Onion-style satirical take on the events
+- "investigation" — In-depth investigative piece uncovering behind-the-scenes details
+- "profile" — Profile piece on a key figure in the scenario
 
-## IMAGE SEARCH
-- Provide a Google Image search query that would return relevant real-world photos for this scenario.
+ARTICLE REQUIREMENTS:
+- Match each publication's real editorial voice, bias, writing style, and formatting.
+- Tabloids: punchy, dramatic, wordplay, short sentences, ALL CAPS for emphasis.
+- Broadsheets: measured, authoritative, complex sentences, named sources.
+- Wire services: dry, factual, no adjectives, just the facts.
+- Satire: absurdist humour mimicking real Onion style (deadpan, ridiculous premise stated as fact).
+- FOREIGN PAPERS MUST WRITE IN ENGLISH but with their national perspective.
+- CRITICAL GEOGRAPHY: Choose primarily publications from the scenario's country. Include 2-3 international publications for foreign reaction and global perspective.
+- AT LEAST 2 articles must be from different countries' newspapers (e.g. if UK scenario: include Le Monde and NYT representing French and American views).
+- VARY THE TIMESTAMPS across the timeline — some "2 hours ago", some "yesterday", some "3 days ago" — to create a sense of unfolding events.
+- Each article's subheadline must be 2-4 sentences that add NEW information, not just repeat the headline.
+
+### OP-ED / COLUMN (exactly 1)
+A long-form opinion piece from a named columnist at a major publication. This is NOT a news article — it is an argumentative, persuasive piece:
+- Include the columnist's full name and their title/role (e.g. "Political Editor", "Chief Commentator")
+- Publication name (pick from the list above or use The Spectator, The New Statesman, The Atlantic, etc.)
+- A provocative, opinionated headline that takes a clear stance
+- Body text of 3-5 sentences with sharp analysis, rhetorical questions, and a clear argument
+- Use the columnist's well-known voice and ideological position
+- Write in first-person occasionally ("I believe", "We must")
+
+### DEVELOPMENTS / BREAKING STATEMENTS (exactly 2-3)
+These are NOT news articles. They are distinct events: official statements, resignations, announcements, leaked documents, poll releases, campaign suspensions. Each one is a self-contained development:
+- "resignation" — A key figure steps down (e.g. "X Resigns as Party Leader")
+- "statement" — An official press release or public statement from an organization/individual
+- "endorsement" — A major figure endorses a candidate
+- "campaign_suspension" — A candidate suspends their campaign
+- "poll_release" — A major poll is released showing dramatic results
+- "leak" — A leaked document/memo/recording surfaces
+- "ruling" — A court or regulatory body makes a ruling affecting the scenario
+- "protest_announcement" — Protests are announced or begin
+
+Each development has a title (like a breaking news chyron), a short paragraph of detail, a source attribution, and a timestamp.
+
+### TWEETS (exactly 6 — MORE VARIETY THAN BEFORE)
+From real public figures who would plausibly comment. Each tweet must sound EXACTLY like that person actually writes:
+- Include their real @handle
+- Capture their vocabulary, tone, use of caps, punctuation quirks, typical tweet structure
+- NEVER make all tweets sound the same — they must have DISTINCT voices
+- Mix of tones:
+  1. Official/establishment response (formal, measured)
+  2. Hot take / pundit analysis (sharp, provocative, "thread incoming" or numbered points)
+  3. Sarcastic/witty/dunk (cutting humour, ratio potential)
+  4. Emotional/viral reaction (genuine anger, shock, celebration)
+  5. Self-interested take (politician spinning for their faction/career)
+  6. Journalist reporting what they're hearing (scoop tone, "I understand that...")
+- Tweets should be 1-3 sentences. Some can use ALL CAPS. Some can be very short (just a few words + emoji).
+- Vary engagement numbers — one should be MASSIVE (going viral, 50K+ retweets), others smaller.
+- Set verified status based on reality (most public figures are verified, but some parody accounts aren't).
+
+### REDDIT POSTS (exactly 4)
+From real subreddits that would discuss this topic:
+- r/worldnews, r/politics, r/unitedkingdom, r/europe, r/news, r/OutOfTheLoop, r/ukpolitics, r/LabourUK, r/tories, r/GreenAndPleasant, r/AskReddit, r/Fauxmoi, r/nottheonion, r/agedlikemilk, etc.
+- Reddit titles must sound like real Reddit posts:
+  - Some editorialized ("This is an absolute disgrace")
+  - Some link titles (matching a real news headline)
+  - Some questions ("What does this mean for...?")
+  - Some meta/humorous ("Can we talk about how...")
+- Realistic upvote counts (major news = 40k-120k, niche political = 2k-15k, humorous = 5k-30k)
+- Realistic comment counts (big threads = 3000-15000, smaller = 200-2000)
+- Include appropriate flair (e.g. "UK Politics", "BREAKING", "Discussion", "Megathread")
+- At least one post should be from a subreddit representing an OPPOSING viewpoint to the dominant narrative
+
+### FACEBOOK POST (exactly 1)
+- A shared news article from a realistic fictional person.
+- Include a personal comment above the shared link (1-3 sentences, natural Facebook voice with perhaps a typo or casual formatting).
+- The shared article must reference one of the news headlines generated above.
+- Include realistic reaction mix and a top comment from another fictional person (with a reply thread feel).
+
+### IMAGE SEARCH
+- Provide a highly specific Google Image search query that would return real-world photos for this scenario. Include key names, locations, and year.
 
 Return this EXACT JSON structure:
 {
-  "image_search_query": "descriptive search for real news photos related to the scenario",
+  "image_search_query": "highly specific photo search query with names location year",
   "articles": [
     {
-      "publication": "PUBLICATION NAME",
-      "headline": "HEADLINE TEXT",
-      "subheadline": "1-3 sentence excerpt in the publication's voice and bias.",
-      "timestamp": "relative time like '2 hours ago' or 'Yesterday at 14:32'"
+      "publication": "The Guardian",
+      "article_type": "analysis",
+      "headline": "What Rayner's Surprise Endorsement Means for the Labour Leadership Race",
+      "subheadline": "The deputy leader's decision to back the left-wing candidate has reshaped the contest overnight. Party insiders say the move was planned for weeks — but the timing caught even the frontrunner's team off guard. Here's what happens next.",
+      "timestamp": "4 hours ago"
+    }
+  ],
+  "oped": {
+    "publication": "The Spectator",
+    "author": "Andrew Neil",
+    "author_title": "Chairman",
+    "headline": "The Labour Party Is Eating Itself — And We Should Let It",
+    "content": "What we are witnessing is not a leadership election. It is a slow-motion implosion of a party that has forgotten what it stands for. The membership is demanding purity at the exact moment the electorate is crying out for competence. I have covered Labour politics for four decades and I have never seen a contest this self-destructive. If the party wants to spend the next year debating socialism versus social democracy while the country faces a cost-of-living crisis, that is their prerogative — but don't expect the voters to wait around.",
+    "timestamp": "12 hours ago"
+  },
+  "developments": [
+    {
+      "type": "resignation",
+      "title": "Shadow Chancellor Resigns, Says Party 'Unrecognisable'",
+      "content": "The Shadow Chancellor has resigned from the frontbench with immediate effect, issuing a scathing resignation letter that warns the party is being captured by 'a faction that cares more about internal control than winning elections'. The letter, obtained by the BBC, describes the current leadership contest as 'a race to the margins'.",
+      "source": "Official Resignation Letter",
+      "timestamp": "1 hour ago"
     }
   ],
   "tweets": [
     {
-      "author_name": "Real Person Name",
-      "author_handle": "realhandle",
+      "author_name": "Piers Morgan",
+      "author_handle": "@piersmorgan",
       "verified": true,
-      "content": "Tweet text here. Keep it authentic to how this person actually tweets.",
-      "timestamp": "relative time like '4h' or '12m'",
-      "retweets": 15400,
-      "likes": 89200,
-      "views": 2400000,
-      "replies": 8900
+      "content": "This Labour leadership contest is the greatest political comedy show on television. And they're not even in government. Imagine letting these people near actual power. 😂",
+      "timestamp": "2h",
+      "retweets": 23400,
+      "likes": 108000,
+      "views": 4200000,
+      "replies": 12300
     }
   ],
   "reddit_posts": [
     {
-      "subreddit": "worldnews",
-      "title": "Reddit post title",
-      "upvotes": 87400,
-      "comment_count": 12300,
-      "author": "realistic_reddit_username",
-      "timestamp": "5 hours ago",
-      "flair": "optional flair text or null"
+      "subreddit": "ukpolitics",
+      "title": "Shadow Chancellor resigns with devastating letter — 'a race to the margins'",
+      "upvotes": 28700,
+      "comment_count": 4200,
+      "author": "MildredBonk",
+      "timestamp": "45 minutes ago",
+      "flair": "BREAKING"
     }
   ],
   "facebook_post": {
-    "sharer_name": "Fictional Person Name",
-    "sharer_comment": "Their personal take on the shared article",
-    "shared_headline": "The headline of the article they're sharing",
-    "shared_source": "Publication Name",
-    "shared_description": "Brief article description/preview text",
-    "reactions": { "like": 234, "love": 45, "wow": 89, "angry": 12, "sad": 5, "haha": 23 },
+    "sharer_name": "Dave Thompson",
+    "sharer_comment": "Honestly at this point I've stopped watching the news. Every time I look someone else has resigned or launched a campaign. Absolute chaos lmao",
+    "shared_headline": "Shadow Chancellor Resigns in Blow to Labour Leadership",
+    "shared_source": "BBC News",
+    "shared_description": "The Shadow Chancellor has quit the frontbench, calling the leadership contest a 'race to the margins' in a resignation letter seen by the BBC.",
+    "reactions": { "like": 234, "love": 45, "wow": 89, "angry": 34, "sad": 12, "haha": 78 },
     "shares": 67,
-    "top_comment_author": "Another Fictional Person",
-    "top_comment": "A realistic Facebook comment",
+    "top_comment_author": "Sarah Jennings",
+    "top_comment": "Dave mate you need to switch off and watch some telly this is doing you no good 😂",
     "timestamp": "3 hours ago"
   }
 }`;
@@ -94,69 +180,146 @@ Return this EXACT JSON structure:
 // ---- PASS 2 PROMPT: Wikipedia + Google + YouTube ----
 const PASS2_SYSTEM_PROMPT = `You are an alternative-history content generator. You will be given a scenario AND a summary of already-generated news/social content about it. Generate Wikipedia, Google search results, and YouTube video cards as if this event really happened.
 
+IMPORTANT: You are generating the REFERENCE layer — wiki articles, search results, video coverage. These should complement (not repeat) the news content. Reference different events and angles.
+
 ## WIKIPEDIA ARTICLE (exactly 1)
-- Write a Wikipedia-style article about the key event or person central to this scenario.
-- Include an infobox with relevant structured data (dates, key figures, locations, outcomes).
-- Write a lead paragraph (2-3 sentences) in neutral, encyclopedic Wikipedia tone.
-- Include a "Background" section (2-3 sentences).
-- Include a "Reactions" or "Aftermath" section (2-3 sentences).
-- The article should read like a real Wikipedia article — neutral point of view, formal, well-sourced feel.
+Write a comprehensive Wikipedia-style article about the central event, election, or political development in this scenario.
 
-## GOOGLE SEARCH RESULTS (exactly 3)
-- Simulate what Google would show if someone searched for this event.
-- Each result has a URL, title, and description snippet.
-- Mix of news sites, Wikipedia, and other sources.
-- The search query should be what a normal person would type (plain language, not formal).
+WIKIPEDIA TONE RULES:
+- Strictly neutral encyclopedic tone. No opinion. Attribute all claims.
+- Use "reportedly", "according to", "analysts noted" language.
+- Write in past tense as if the event has already concluded.
+- Include [citation needed] markers in at least one place for realism.
+- The article should feel like a real Wikipedia entry — formal, well-structured, with appropriate level of detail.
 
-## YOUTUBE VIDEOS (exactly 1)
-- Simulate YouTube video cards that would appear about this event.
-- Include channel names (use real channels that would cover this: BBC News, CNN, Vice, Vox, Sky News, etc.)
-- Include realistic view counts, upload timestamps.
-- Video titles should be YouTube-style: slightly clickbaity but plausible for news channels.
+INFOBOX:
+- Include a rich infobox with type classification and 5-7 relevant fields.
+- Fields should include dates, key figures, locations, outcomes, turnout (if election), predecessor/successor (if applicable).
+- Include a realistic image caption describing what a photo would show.
+
+LEAD PARAGRAPH:
+- 3-4 sentences introducing the event, its significance, and outcome.
+- Start with "The [year] [event name] was..." Wikipedia style.
+
+SECTIONS (exactly 3-4, rich content):
+1. "Background" (3-4 sentences) — Context, what led to this, historical parallels
+2. "Key Events" or "Campaign" or "Timeline" (4-5 sentences) — Chronological account of what happened. Include specific dates, turning points, candidate declarations, resignations, debates.
+3. "Reactions" (3-4 sentences) — How different groups reacted: domestic political parties, international leaders, media, public, markets
+4. "Aftermath" or "Legacy" (2-3 sentences) — What happened next, long-term significance
+
+CATEGORIES: At least 5 relevant Wikipedia-style categories (e.g. "2028 in British politics", "Labour Party (UK) leadership elections", etc.)
+
+## GOOGLE SEARCH RESULTS (exactly 4)
+Simulate a Google SERP with a realistic mix of source types:
+- 1 Wikipedia article
+- 1-2 major news sites (BBC, Guardian, NYT, etc.)
+- 1 specialist/opinion site (Spectator, New Statesman, Politico, etc.)
+- 1 social media aggregator or forum (Reddit, Twitter moment)
+
+The search query must be in natural language as a real person would type (e.g. "who won labour leadership 2028" or "labour leader 2028 results").
+Each result needs: realistic URL path (with date slugs), clickable-looking title, and a 2-line Google snippet (may include date in snippet).
+
+## YOUTUBE VIDEOS (exactly 2)
+Two distinct YouTube videos covering different angles:
+1. A mainstream news report (BBC News, Sky News, CNN, etc.) — straight reporting of events
+2. A commentary/analysis video (Novara Media, TLDR News, Vox, Vice News, The Rest Is Politics, etc.) — more analytical, longer-form
+
+Each video needs:
+- Real channel name (use real YouTube news/politics channels)
+- YouTube-style title (slightly clickbaity, uses caps for emphasis, includes key names)
+- Realistic view counts (mainstream = 500K-3M, analysis = 100K-800K depending on channel size)
+- Upload timestamp (within the last day for breaking news, within a week for analysis)
+- Duration (news clips 3-12 min, analysis 12-45 min)
+- Short description preview (1-2 lines, includes key topics covered)
+
+## IMAGE SEARCH
+- Provide another image search query for Wikipedia/YouTube visuals.
 
 Return this EXACT JSON structure:
 {
+  "image_search_query": "specific photo search for wikipedia/youtube visuals",
   "wikipedia": {
-    "title": "Article Title",
+    "title": "2028 Labour Party Leadership Election",
     "infobox": {
-      "type": "Event or Person or Organization etc.",
-      "image_caption": "A brief caption describing what image would appear",
+      "type": "Leadership election",
+      "image_caption": "The winning candidate speaking at a victory rally in London",
       "fields": [
-        { "label": "Date", "value": "The date" },
-        { "label": "Location", "value": "The location" }
+        { "label": "Date", "value": "15 September 2028" },
+        { "label": "Turnout", "value": "62.4% of party membership" },
+        { "label": "Winner", "value": "Candidate Name" },
+        { "label": "Runner-up", "value": "Candidate Name" },
+        { "label": "Predecessor", "value": "Previous Leader Name" },
+        { "label": "Location", "value": "United Kingdom" }
       ]
     },
-    "lead": "The opening paragraph in encyclopedic tone...",
+    "lead": "The 2028 Labour Party leadership election was triggered by...",
     "sections": [
       {
         "heading": "Background",
-        "content": "Section content..."
+        "content": "The election was triggered following the resignation of [previous leader] after the party's defeat in the [year] general election. It was the [nth] leadership contest in [n] years, reflecting deep divisions within the party over direction and electability..."
+      },
+      {
+        "heading": "Campaign",
+        "content": "The campaign period saw [n] candidates secure enough nominations from MPs to appear on the ballot. Key moments included [candidate]'s surprise entry into the race, the televised debate on [date] where [key moment], and [candidate]'s withdrawal following poor polling..."
       },
       {
         "heading": "Reactions",
-        "content": "Section content..."
+        "content": "Domestic reaction was sharply divided. The [opposition party] described the result as [quote]. International leaders including [names] offered congratulations. Financial markets [reacted positively/negatively], with the pound [rising/falling]..."
+      },
+      {
+        "heading": "Aftermath",
+        "content": "Following the result, [winner] appointed a new Shadow Cabinet that... The party saw an immediate [rise/fall] in opinion polls. Commentators noted that..."
       }
     ],
-    "categories": ["Category 1", "Category 2", "Category 3"]
+    "categories": [
+      "2028 in British politics",
+      "Labour Party (UK) leadership elections",
+      "September 2028 events in the United Kingdom",
+      "2028 elections in the United Kingdom",
+      "Political party leadership elections"
+    ]
   },
   "google_results": {
-    "query": "what a normal person would search",
+    "query": "who won labour leadership election 2028",
     "results": [
       {
-        "title": "Result title as it appears on Google",
-        "url": "https://example.com/realistic-url-path",
-        "snippet": "The description snippet shown under the result, 1-2 sentences."
+        "title": "2028 Labour Party Leadership Election - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/2028_Labour_Party_leadership_election",
+        "snippet": "The 2028 Labour Party leadership election was held in September 2028 following the resignation of..."
+      },
+      {
+        "title": "Labour leadership: [Winner] elected as new party leader — BBC News",
+        "url": "https://www.bbc.co.uk/news/uk-politics-2028-labour-leader",
+        "snippet": "[Winner] has been elected as the new leader of the Labour Party, defeating [runner-up] in a closely-fought contest. The result was announced..."
+      },
+      {
+        "title": "What [Winner's] victory means for British politics — The Spectator",
+        "url": "https://www.spectator.co.uk/article/labour-leadership-2028-winner-analysis",
+        "snippet": "The new Labour leader inherits a party divided and a country sceptical. Here's our analysis of what the result means for the next general election..."
+      },
+      {
+        "title": "Reddit · r/LabourUK · Labour leadership results megathread",
+        "url": "https://www.reddit.com/r/LabourUK/comments/leadership_results",
+        "snippet": "Official results thread for the 2028 Labour leadership election. All discussion, reactions, and analysis here. Sort by new for live updates."
       }
     ]
   },
   "youtube_videos": [
     {
-      "title": "Video Title - YouTube Style",
-      "channel": "Channel Name",
-      "views": "2.4M views",
-      "timestamp": "6 hours ago",
-      "duration": "12:34",
-      "description_preview": "Brief video description preview text"
+      "title": "[Winner] elected Labour leader: BBC News Special Report",
+      "channel": "BBC News",
+      "views": "1.2M views",
+      "timestamp": "8 hours ago",
+      "duration": "6:42",
+      "description_preview": "Full coverage of the Labour leadership result as [winner] is elected the new leader of the Labour Party. Includes the victory speech, reaction from Westminster, and analysis from our political editor."
+    },
+    {
+      "title": "Dan CORDER to Break Down Labour's New Leader | The Rest Is Politics",
+      "channel": "The Rest Is Politics",
+      "views": "420K views",
+      "timestamp": "2 days ago",
+      "duration": "42:15",
+      "description_preview": "Rory and Alastair discuss the Labour leadership contest, what the candidates are offering, and who is likely to come out on top — recorded before the result was announced."
     }
   ]
 }`;
@@ -286,11 +449,11 @@ export async function POST(request) {
   const trimmedScenario = scenario.trim();
 
   try {
-    // ---- PASS 1: News + Social Media ----
+    // ---- PASS 1: News + Social Media (more content, higher tokens) ----
     const pass1Data = await callLLM(
       PASS1_SYSTEM_PROMPT,
       `Generate content for this alternative-history scenario: "${trimmedScenario}"`,
-      4000
+      8000
     );
 
     // Validate pass 1
@@ -299,19 +462,25 @@ export async function POST(request) {
     }
 
     // ---- PASS 2: Wikipedia + Google + YouTube (in parallel with image fetch) ----
-    const pass2Summary = `Scenario: "${trimmedScenario}"\n\nAlready generated headlines: ${pass1Data.articles
-      .map((a) => `${a.publication}: "${a.headline}"`)
-      .join("; ")}`;
+    const pass2Summary = `Scenario: "${trimmedScenario}"
+    
+News headlines generated so far: ${pass1Data.articles
+      .map((a) => `${a.publication}: "${a.headline}" (${a.article_type || "news"})`)
+      .join("; ")}
+
+Op-ed: ${pass1Data.oped?.publication}: "${pass1Data.oped?.headline || "none"}"
+
+Developments: ${(pass1Data.developments || []).map((d) => `${d.type}: "${d.title}"`).join("; ") || "none"}`;
 
     const [pass2Data, imageUrls] = await Promise.all([
       callLLM(
         PASS2_SYSTEM_PROMPT,
         `Generate Wikipedia, Google results, and YouTube content for this scenario.\n\n${pass2Summary}`,
-        3000
+        5000
       ),
       fetchSerperImages(
         pass1Data.image_search_query || trimmedScenario,
-        7
+        10
       ),
     ]);
 
@@ -321,9 +490,17 @@ export async function POST(request) {
       image_url: imageUrls[i % Math.max(imageUrls.length, 1)] || null,
     }));
 
+    // Give the op-ed an image too
+    const oped = pass1Data.oped ? {
+      ...pass1Data.oped,
+      image_url: imageUrls[Math.min(articles.length, imageUrls.length - 1)] || null,
+    } : null;
+
     // ---- Compile full response ----
     return NextResponse.json({
       articles,
+      oped,
+      developments: pass1Data.developments || [],
       tweets: pass1Data.tweets || [],
       reddit_posts: pass1Data.reddit_posts || [],
       facebook_post: pass1Data.facebook_post || null,

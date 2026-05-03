@@ -12,6 +12,8 @@ import NewsCard from "./NewsCard";
 import GoogleResultsCard from "./GoogleResultsCard";
 import YouTubeCard from "./YouTubeCard";
 import FacebookCard from "./FacebookCard";
+import OpEdCard from "./OpEdCard";
+import StatementCard from "./StatementCard";
 
 /**
  * Build a shuffled array of timeline items from all content types.
@@ -24,6 +26,18 @@ function buildTimelineItems(data) {
   if (data.articles) {
     data.articles.forEach((article, i) => {
       items.push({ type: "news", data: article, priority: i === 0 ? 0 : 2, id: `news-${i}` });
+    });
+  }
+
+  // Op-Ed
+  if (data.oped) {
+    items.push({ type: "oped", data: data.oped, priority: 1, id: "oped-0" });
+  }
+
+  // Developments / Breaking statements
+  if (data.developments) {
+    data.developments.forEach((dev, i) => {
+      items.push({ type: "statement", data: dev, priority: 1, id: `statement-${i}` });
     });
   }
 
@@ -48,18 +62,18 @@ function buildTimelineItems(data) {
 
   // Wikipedia
   if (data.wikipedia) {
-    items.push({ type: "wikipedia", data: data.wikipedia, priority: 1, id: "wiki-0" });
+    items.push({ type: "wikipedia", data: data.wikipedia, priority: 6, id: "wiki-0" });
   }
 
   // Google results
   if (data.google_results) {
-    items.push({ type: "google", data: data.google_results, priority: 6, id: "google-0" });
+    items.push({ type: "google", data: data.google_results, priority: 7, id: "google-0" });
   }
 
   // YouTube videos
   if (data.youtube_videos) {
     data.youtube_videos.forEach((video, i) => {
-      items.push({ type: "youtube", data: video, priority: 7, id: `yt-${i}` });
+      items.push({ type: "youtube", data: video, priority: 8, id: `yt-${i}` });
     });
   }
 
@@ -67,16 +81,21 @@ function buildTimelineItems(data) {
   items.sort((a, b) => a.priority - b.priority);
 
   // Interleave: take items in a pattern that creates variety
-  // We want: news, tweet, news, reddit, news, wiki, tweet, google, news, fb, ...
   const news = items.filter((i) => i.type === "news");
   const social = items.filter((i) => ["tweet", "reddit", "facebook"].includes(i.type));
   const reference = items.filter((i) => ["wikipedia", "google", "youtube"].includes(i.type));
+  const developments = items.filter((i) => ["oped", "statement"].includes(i.type));
 
   const interleaved = [];
-  let ni = 0, si = 0, ri = 0;
+  let ni = 0, si = 0, ri = 0, di = 0;
 
-  // Pattern: news, social, news, reference, social, news, social, reference...
-  const pattern = ["news", "social", "news", "reference", "social", "news", "social", "reference", "news", "social"];
+  // Pattern: news, development, social, news, reference, news, social, development, reference, news...
+  const pattern = [
+    "news", "development", "news", "social",
+    "reference", "news", "development", "social",
+    "news", "reference", "social", "news",
+    "development", "social", "reference",
+  ];
 
   for (const slot of pattern) {
     if (slot === "news" && ni < news.length) {
@@ -85,11 +104,14 @@ function buildTimelineItems(data) {
       interleaved.push(social[si++]);
     } else if (slot === "reference" && ri < reference.length) {
       interleaved.push(reference[ri++]);
+    } else if (slot === "development" && di < developments.length) {
+      interleaved.push(developments[di++]);
     }
   }
 
   // Add any remaining items
   while (ni < news.length) interleaved.push(news[ni++]);
+  while (di < developments.length) interleaved.push(developments[di++]);
   while (si < social.length) interleaved.push(social[si++]);
   while (ri < reference.length) interleaved.push(reference[ri++]);
 
@@ -112,6 +134,10 @@ function TimelineItem({ item }) {
       return <YouTubeCard video={item.data} />;
     case "facebook":
       return <FacebookCard post={item.data} />;
+    case "oped":
+      return <OpEdCard oped={item.data} />;
+    case "statement":
+      return <StatementCard development={item.data} />;
     default:
       return null;
   }

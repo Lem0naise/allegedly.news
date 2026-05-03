@@ -7,11 +7,14 @@ const LOADING_MESSAGES = [
   "Dispatching reporters…",
   "Interviewing sources…",
   "Writing headlines…",
+  "Penning op-eds…",
   "Checking facts (just kidding)…",
   "Crafting tweets…",
   "Posting to Reddit…",
+  "Writing official statements…",
   "Editing Wikipedia…",
   "Googling the aftermath…",
+  "Uploading to YouTube…",
   "Laying out the timeline…",
 ];
 
@@ -136,8 +139,9 @@ export default function ScenarioForm() {
         <div className="loading-spinner" />
         <p className="loading-text">{loadingMsg}</p>
         <p className="loading-subtext">
-          This may take 20–40 seconds. We&apos;re generating news articles, tweets,
-          Reddit posts, Wikipedia entries, and more for &ldquo;{submittedScenario}&rdquo;.
+          This may take 30–50 seconds. We&apos;re generating news articles, op-eds, official
+          statements, tweets, Reddit threads, Wikipedia entries, YouTube videos, and more
+          for &ldquo;{submittedScenario}&rdquo;.
         </p>
       </div>
     );
