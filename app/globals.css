@@ -351,7 +351,6 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   background: var(--background-color);
-  position: sticky;
   top: 0;
   z-index: 100;
 }
