@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 // ---- Configuration ----
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = "x-ai/grok-4.1-fast";
+const OPENROUTER_MODEL = "deepseek-v4-flash";
 
 // ---- PASS 1 PROMPT: News headlines + Social media + Op-Eds + Developments ----
 const PASS1_SYSTEM_PROMPT = `You are an alternative-history content generator. Given a scenario, generate a realistic, dynamic, and deeply varied media timeline as if this scenario really happened.
