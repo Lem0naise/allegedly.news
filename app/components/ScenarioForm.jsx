@@ -8,7 +8,6 @@ const LOADING_MESSAGES = [
   "Interviewing sources…",
   "Writing headlines…",
   "Penning op-eds…",
-  "Checking facts (just kidding)…",
   "Crafting tweets…",
   "Posting to Reddit…",
   "Writing official statements…",
@@ -18,69 +17,200 @@ const LOADING_MESSAGES = [
   "Laying out the timeline…",
 ];
 
+const ITEM_LABELS = {
+  articles: "articles",
+  oped: "op-eds",
+  developments: "developments",
+  tweets: "tweets",
+  reddit_posts: "Reddit posts",
+  facebook_post: "Facebook posts",
+  wikipedia: "Wikipedia pages",
+  google_results: "Google results",
+  youtube_videos: "YouTube videos",
+};
+
+function parseSSE(buffer) {
+  const events = [];
+  const parts = buffer.split("\n\n");
+  const rest = parts.pop();
+
+  for (const part of parts) {
+    const lines = part.split("\n");
+    let eventType = "message";
+    let data = "";
+
+    for (const line of lines) {
+      if (line.startsWith("event: ")) eventType = line.slice(7).trim();
+      else if (line.startsWith("data: ")) data = line.slice(6);
+    }
+
+    if (data) {
+      try {
+        events.push({ type: eventType, data: JSON.parse(data) });
+      } catch {}
+    }
+  }
+
+  return { events, rest };
+}
+
+function countItems(data) {
+  let count = 0;
+  if (data.articles?.length) count += data.articles.length;
+  if (data.oped) count += 1;
+  if (data.developments?.length) count += data.developments.length;
+  if (data.tweets?.length) count += data.tweets.length;
+  if (data.reddit_posts?.length) count += data.reddit_posts.length;
+  if (data.facebook_post) count += 1;
+  if (data.wikipedia) count += 1;
+  if (data.google_results) count += 1;
+  if (data.youtube_videos?.length) count += data.youtube_videos.length;
+  return count;
+}
+
 export default function ScenarioForm() {
   const [scenario, setScenario] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [phase, setPhase] = useState("idle"); // idle | loading | streaming | done | error
   const [timelineData, setTimelineData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [partialError, setPartialError] = useState(null);
   const [submittedScenario, setSubmittedScenario] = useState("");
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [progress, setProgress] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
+  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const timelineRef = useRef(null);
+  const abortRef = useRef(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!scenario.trim()) return;
 
-    setStatus("loading");
-    setSubmittedScenario(scenario.trim());
-    setErrorMessage("");
+    const input = scenario.trim();
+    setSubmittedScenario(input);
+    setPartialError(null);
     setTimelineData(null);
+    setPhase("loading");
+    setProgress(0);
+    setStatusMessage("Starting…");
 
+    // Spin loading messages during initial phase
     let msgIndex = 0;
-    const interval = setInterval(() => {
+    const msgInterval = setInterval(() => {
       msgIndex = (msgIndex + 1) % LOADING_MESSAGES.length;
       setLoadingMsg(LOADING_MESSAGES[msgIndex]);
     }, 2500);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenario: scenario.trim() }),
+        body: JSON.stringify({ scenario: input }),
+        signal: controller.signal,
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        let errMsg = `Server error (${res.status})`;
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        throw new Error(errMsg);
       }
 
-      if (!data.articles || !Array.isArray(data.articles)) {
-        throw new Error("Invalid response format from server");
-      }
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("No response stream available");
 
-      setTimelineData(data);
-      setStatus("done");
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let accumulated = {
+        articles: [],
+        oped: null,
+        developments: [],
+        tweets: [],
+        reddit_posts: [],
+        facebook_post: null,
+        wikipedia: null,
+        google_results: null,
+        youtube_videos: [],
+        image_urls: [],
+      };
+
+      // Stop the rotating messages — we'll use SSE status messages now
+      clearInterval(msgInterval);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const { events, rest } = parseSSE(buffer);
+        buffer = rest;
+
+        for (const event of events) {
+          switch (event.type) {
+            case "status": {
+              setStatusMessage(event.data.message || "");
+              setProgress(event.data.progress || 0);
+              break;
+            }
+            case "data": {
+              accumulated = { ...accumulated, ...event.data };
+              setTimelineData({ ...accumulated });
+
+              // If we have articles (the core content), switch to streaming view
+              if (accumulated.articles?.length > 0 || accumulated.tweets?.length > 0) {
+                setPhase("streaming");
+              }
+              break;
+            }
+            case "error": {
+              setPartialError(event.data.message);
+              break;
+            }
+            case "fatal_error": {
+              throw new Error(event.data.message);
+            }
+            case "done": {
+              setTimelineData({ ...accumulated });
+              setPhase("done");
+              break;
+            }
+          }
+        }
+      }
     } catch (err) {
+      if (err.name === "AbortError") return;
+      console.error("[ScenarioForm] Generation failed:", err.message);
       setErrorMessage(err.message);
-      setStatus("error");
+      if (timelineData && (timelineData.articles?.length > 0 || timelineData.tweets?.length > 0)) {
+        setPartialError(err.message);
+      } else {
+        setPhase("error");
+      }
     } finally {
-      clearInterval(interval);
+      clearInterval(msgInterval);
+      abortRef.current = null;
     }
   }
 
   function handleReset() {
-    setStatus("idle");
+    abortRef.current?.abort();
+    setPhase("idle");
     setScenario("");
     setTimelineData(null);
     setErrorMessage("");
+    setPartialError(null);
     setSubmittedScenario("");
+    setStatusMessage("");
+    setProgress(0);
   }
 
   const handleScreenshot = useCallback(async () => {
     if (!timelineRef.current) return;
-
     try {
       const html2canvas = (await import("html2canvas-pro")).default;
       const canvas = await html2canvas(timelineRef.current, {
@@ -90,7 +220,6 @@ export default function ScenarioForm() {
         allowTaint: true,
         logging: false,
       });
-
       const link = document.createElement("a");
       link.download = `allegedly-${submittedScenario.slice(0, 30).replace(/[^a-z0-9]/gi, "-")}.png`;
       link.href = canvas.toDataURL("image/png");
@@ -101,15 +230,16 @@ export default function ScenarioForm() {
     }
   }, [darkMode, submittedScenario]);
 
-  // ---- IDLE: show landing with form ----
-  if (status === "idle") {
+  function itemCount() {
+    if (!timelineData) return 0;
+    return countItems(timelineData);
+  }
+
+  // ---- IDLE ----
+  if (phase === "idle") {
     return (
       <div className="landing-container">
-        <img
-          src="/icons/icon.webp"
-          alt="Allegedly News"
-          className="landing-icon"
-        />
+        <img src="/icons/icon.webp" alt="Allegedly News" className="landing-icon" />
         <h1>Generate a Timeline</h1>
         <p className="landing-subtitle">
           Enter an alternative-history scenario and we&apos;ll generate an entire
@@ -132,23 +262,25 @@ export default function ScenarioForm() {
     );
   }
 
-  // ---- LOADING ----
-  if (status === "loading") {
+  // ---- LOADING (no data yet) ----
+  if (phase === "loading") {
     return (
       <div className="loading-container">
         <div className="loading-spinner" />
-        <p className="loading-text">{loadingMsg}</p>
+        <div className="loading-bar-track">
+          <div className="loading-bar-fill" style={{ width: `${Math.min(progress, 60)}%` }} />
+        </div>
+        <p className="loading-text">{statusMessage || loadingMsg}</p>
         <p className="loading-subtext">
-          This may take 30–50 seconds. We&apos;re generating news articles, op-eds, official
-          statements, tweets, Reddit threads, Wikipedia entries, YouTube videos, and more
-          for &ldquo;{submittedScenario}&rdquo;.
+          Generating news articles, op-eds, statements, tweets, Reddit threads,
+          Wikipedia entries, and YouTube videos for &ldquo;{submittedScenario}&rdquo;.
         </p>
       </div>
     );
   }
 
-  // ---- ERROR ----
-  if (status === "error") {
+  // ---- ERROR (no data) ----
+  if (phase === "error") {
     return (
       <div className="error-banner">
         <h3>Generation Failed</h3>
@@ -160,9 +292,37 @@ export default function ScenarioForm() {
     );
   }
 
-  // ---- DONE: show timeline ----
+  // ---- STREAMING + DONE: show timeline ----
+  const isStreaming = phase === "streaming";
+
   return (
     <div className={darkMode ? "timeline-wrapper dark-mode" : "timeline-wrapper"}>
+      {/* Progress bar (visible during streaming) */}
+      {isStreaming && (
+        <div className="streaming-progress">
+          <div className="streaming-progress-bar">
+            <div
+              className="streaming-progress-fill"
+              style={{ width: `${Math.min(progress + 10, 95)}%` }}
+            />
+          </div>
+          <div className="streaming-info">
+            <span className="streaming-status">{statusMessage}</span>
+            <span className="streaming-count">{itemCount()} items generated</span>
+          </div>
+          {partialError && (
+            <div className="streaming-error">{partialError}</div>
+          )}
+        </div>
+      )}
+
+      {/* Partial error banner during streaming */}
+      {!isStreaming && partialError && (
+        <div className="streaming-error streaming-error--banner">
+          {partialError}
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="timeline-toolbar">
         <div className="toolbar-left">
@@ -186,13 +346,13 @@ export default function ScenarioForm() {
               </svg>
             )}
           </button>
-          <button onClick={handleScreenshot} className="toolbar-btn" title="Download as image">
+          <button onClick={handleScreenshot} className="toolbar-btn" title="Download as image" disabled={isStreaming}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
               <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" />
             </svg>
           </button>
           <button onClick={handleReset} className="toolbar-btn toolbar-btn--primary">
-            New Scenario
+            {isStreaming ? "Cancel" : "New Scenario"}
           </button>
         </div>
       </div>

@@ -289,6 +289,96 @@ body {
   max-width: 400px;
 }
 
+/* Loading bar */
+.loading-bar-track {
+  width: 300px;
+  max-width: 80vw;
+  height: 4px;
+  background: var(--light-gray);
+  border-radius: 4px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* Streaming progress bar (shown when data starts arriving) */
+.streaming-progress {
+  padding: 12px 20px;
+  background: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.streaming-progress-bar {
+  height: 3px;
+  background: var(--light-gray);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.streaming-progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+
+.streaming-info {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-meta);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.streaming-status {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.streaming-count {
+  font-weight: 400;
+}
+
+.streaming-error {
+  font-family: var(--font-meta);
+  font-size: 0.8rem;
+  color: #c0392b;
+  margin-top: 4px;
+}
+
+.streaming-error--banner {
+  padding: 8px 20px;
+  background: #fdf2f2;
+  border-bottom: 1px solid #e74c3c;
+}
+
+/* Dark mode streaming */
+.dark-mode .streaming-progress {
+  background: #15202B;
+  border-color: #38444D;
+}
+
+.dark-mode .streaming-progress-bar {
+  background: #38444D;
+}
+
+.dark-mode .streaming-error {
+  color: #e74c3c;
+}
+
+.dark-mode .streaming-error--banner {
+  background: #2A1A1A;
+  border-color: #c0392b;
+}
+
 /* ===== Error State ===== */
 .error-banner {
   max-width: 600px;
