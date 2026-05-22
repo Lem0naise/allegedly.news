@@ -289,6 +289,19 @@ body {
   max-width: 400px;
 }
 
+.loading-container .loading-warning {
+  font-family: var(--font-meta);
+  font-size: 0.85rem;
+  color: #c0392b;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.loading-container .loading-warning span {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 /* Loading bar */
 .loading-bar-track {
   width: 300px;

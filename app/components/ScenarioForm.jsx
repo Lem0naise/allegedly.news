@@ -79,8 +79,10 @@ export default function ScenarioForm() {
   const [progress, setProgress] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
+  const [waitTime, setWaitTime] = useState(0);
   const timelineRef = useRef(null);
   const abortRef = useRef(null);
+  const waitTimerRef = useRef(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -92,7 +94,13 @@ export default function ScenarioForm() {
     setTimelineData(null);
     setPhase("loading");
     setProgress(0);
+    setWaitTime(0);
     setStatusMessage("Starting…");
+
+    // Tick up the wait timer so the user sees elapsed time
+    waitTimerRef.current = setInterval(() => {
+      setWaitTime((prev) => prev + 1);
+    }, 1000);
 
     // Spin loading messages during initial phase
     let msgIndex = 0;
@@ -142,6 +150,10 @@ export default function ScenarioForm() {
       // Stop the rotating messages — we'll use SSE status messages now
       clearInterval(msgInterval);
 
+      // First event received — stop the wait counter
+      clearInterval(waitTimerRef.current);
+      setWaitTime(0);
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -174,6 +186,10 @@ export default function ScenarioForm() {
             case "fatal_error": {
               throw new Error(event.data.message);
             }
+            case "heartbeat": {
+              // Server is alive — just ignore the keepalive
+              break;
+            }
             case "done": {
               setTimelineData({ ...accumulated });
               setPhase("done");
@@ -184,21 +200,24 @@ export default function ScenarioForm() {
       }
     } catch (err) {
       if (err.name === "AbortError") return;
+      clearInterval(waitTimerRef.current);
       console.error("[ScenarioForm] Generation failed:", err.message);
       setErrorMessage(err.message);
-      if (timelineData && (timelineData.articles?.length > 0 || timelineData.tweets?.length > 0)) {
+      if (phase === "streaming" || (timelineData && (timelineData.articles?.length > 0 || timelineData.tweets?.length > 0))) {
         setPartialError(err.message);
       } else {
         setPhase("error");
       }
     } finally {
       clearInterval(msgInterval);
+      clearInterval(waitTimerRef.current);
       abortRef.current = null;
     }
   }
 
   function handleReset() {
     abortRef.current?.abort();
+    clearInterval(waitTimerRef.current);
     setPhase("idle");
     setScenario("");
     setTimelineData(null);
@@ -207,6 +226,7 @@ export default function ScenarioForm() {
     setSubmittedScenario("");
     setStatusMessage("");
     setProgress(0);
+    setWaitTime(0);
   }
 
   const handleScreenshot = useCallback(async () => {
@@ -271,6 +291,12 @@ export default function ScenarioForm() {
           <div className="loading-bar-fill" style={{ width: `${Math.min(progress, 60)}%` }} />
         </div>
         <p className="loading-text">{statusMessage || loadingMsg}</p>
+        {waitTime > 15 && (
+          <p className="loading-warning">
+            Taking longer than expected&hellip; ({waitTime}s)
+            {waitTime > 40 && <span> The server may be under load. Still working&hellip;</span>}
+          </p>
+        )}
         <p className="loading-subtext">
           Generating news articles, op-eds, statements, tweets, Reddit threads,
           Wikipedia entries, and YouTube videos for &ldquo;{submittedScenario}&rdquo;.

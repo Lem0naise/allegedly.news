@@ -368,73 +368,76 @@ async function fetchSerperImages(query, count = 10) {
   }
 }
 
-// ---- Call OpenRouter LLM ----
-async function callLLM(systemPrompt, userMessage, maxTokens = 3000) {
+// ---- Call OpenRouter LLM with timeout ----
+async function callLLM(systemPrompt, userMessage, maxTokens = 3000, timeoutMs = 45000) {
   const apiKey = process.env.OPENROUTER_API_KEY;
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), timeoutMs);
+  const t0 = Date.now();
 
-  const res = await fetch(OPENROUTER_API_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://allegedly.news",
-      "X-Title": "Allegedly News",
-    },
-    body: JSON.stringify({
-      model: OPENROUTER_MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.9,
-      max_tokens: maxTokens,
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text().catch(() => "");
-    throw new Error(`OpenRouter error (${res.status}): ${errText.substring(0, 200)}`);
-  }
-
-  let rawText;
-  try {
-    rawText = await res.text();
-  } catch {
-    throw new Error("Failed to read OpenRouter response");
-  }
-
-  if (!rawText || !rawText.trim()) throw new Error("OpenRouter returned empty response");
-
-  let json;
-  try {
-    json = JSON.parse(rawText);
-  } catch {
-    throw new Error(`OpenRouter returned invalid JSON: "${rawText.substring(0, 100)}..."`);
-  }
-
-  const content = json?.choices?.[0]?.message?.content;
-  if (!content) throw new Error(`LLM returned no content. Keys: ${Object.keys(json).join(", ")}`);
+  console.log(`[LLM] start (${maxTokens}tok, ${timeoutMs}ms timeout)`);
 
   try {
-    return JSON.parse(content);
-  } catch (e) {
-    throw new Error(`LLM returned malformed JSON: "${content.substring(0, 200)}"`);
+    const res = await fetch(OPENROUTER_API_URL, {
+      signal: abort.signal,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://allegedly.news",
+        "X-Title": "Allegedly News",
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.9,
+        max_tokens: maxTokens,
+      }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`OpenRouter ${res.status}: ${text.substring(0, 200)}`);
+    }
+
+    const raw = await res.text();
+    if (!raw || !raw.trim()) throw new Error("Empty response body");
+
+    const json = JSON.parse(raw);
+    const content = json?.choices?.[0]?.message?.content;
+    if (!content) throw new Error(`No content in response (keys: ${Object.keys(json).join(",")})`);
+
+    const parsed = JSON.parse(content);
+    console.log(`[LLM] ok (${Date.now() - t0}ms, ${Object.keys(parsed).length} top keys)`);
+    return parsed;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      console.error(`[LLM] TIMEOUT after ${Date.now() - t0}ms`);
+      throw new Error(`LLM timed out after ${timeoutMs / 1000}s`);
+    }
+    console.error(`[LLM] fail at ${Date.now() - t0}ms: ${err.message}`);
+    throw err;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-// ---- Retry wrapper ----
-async function callWithRetry(systemPrompt, userMessage, maxTokens, retries = 1) {
-  let lastErr;
+// ---- Retry wrapper with status callback ----
+async function callWithRetry(systemPrompt, userMessage, maxTokens, retries = 1, timeoutMs = 45000, onRetry) {
   for (let i = 0; i <= retries; i++) {
     try {
-      return await callLLM(systemPrompt, userMessage, maxTokens);
+      return await callLLM(systemPrompt, userMessage, maxTokens, timeoutMs);
     } catch (err) {
-      lastErr = err;
-      if (i < retries) await new Promise((r) => setTimeout(r, 1000 * (i + 1)));
+      if (i === retries) throw err;
+      console.log(`[LLM] retry ${i + 1}/${retries}: ${err.message}`);
+      if (onRetry) onRetry(i + 1, retries);
+      await new Promise((r) => setTimeout(r, 2000));
     }
   }
-  throw lastErr;
 }
 
 // ---- SSE helpers ----
@@ -443,7 +446,9 @@ const encoder = new TextEncoder();
 function sseEvent(controller, event, data) {
   try {
     controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-  } catch {}
+  } catch (e) {
+    console.error("[SSE] send failed:", e.message);
+  }
 }
 
 function sseStatus(controller, message, phase, progress) {
@@ -476,6 +481,16 @@ export async function POST(request) {
       const send = (event, data) => { if (!closed) sseEvent(controller, event, data); };
       const status = (msg, phase, progress) => { if (!closed) sseStatus(controller, msg, phase, progress); };
 
+      // Heartbeat every 5s so the frontend knows the server is alive
+      const hb = setInterval(() => send("heartbeat", { t: Date.now() }), 5000);
+
+      // Helper for retry-visible callWithRetry
+      const withStatus = (prompt, msg, maxTok, retries, timeout, phaseLabel, progressVal) => {
+        return callWithRetry(prompt, msg, maxTok, retries, timeout, (a, t) => {
+          status(`Retrying ${phaseLabel} (${a}/${t})…`, "generating", progressVal);
+        });
+      };
+
       // Accumulated state for the frontend
       let result = {
         articles: [],
@@ -490,17 +505,16 @@ export async function POST(request) {
         image_urls: [],
       };
 
-      // Whether a "fatal" error occurred before any data — means we should show just the error
+      // Whether we've received any data — determines fatal vs partial error
       let gotData = false;
 
       try {
-        // ===== PHASE 0: Event Chronology =====
+        // ===== PHASE 0: Event Chronology (30s timeout, 2 retries) =====
         status("Creating event timeline…", "planning", 5);
-        const phase0 = await callWithRetry(
+        const phase0 = await withStatus(
           PHASE0_PROMPT,
           `Generate an event chronology for this alternative-history scenario: "${trimmedScenario}"`,
-          2000,
-          2
+          2000, 2, 30000, "event timeline", 5
         );
         const events = phase0?.events || [];
         const eventsSummary = events.map((e, i) =>
@@ -508,21 +522,19 @@ export async function POST(request) {
         ).join("\n\n");
         const eventContext = `Scenario: "${trimmedScenario}"\n\nEvent Chronology:\n${eventsSummary}`;
 
-        // ===== PHASE 1a + 1b (PARALLEL) =====
+        // ===== PHASE 1a + 1b (60s + 45s timeouts, 1 retry each) =====
         status("Writing articles and social posts…", "generating", 20);
 
         const [phase1aResult, phase1bResult] = await Promise.allSettled([
-          callWithRetry(
+          withStatus(
             PHASE1A_PROMPT,
             `${eventContext}\n\nGenerate 8 news articles, 1 op-ed, and 2-3 breaking developments. Each must cover a DIFFERENT event from the chronology above.`,
-            7000,
-            1
+            7000, 1, 60000, "articles", 20
           ),
-          callWithRetry(
+          withStatus(
             PHASE1B_PROMPT,
             `${eventContext}\n\nGenerate 6 tweets, 4 Reddit posts, and 1 Facebook post reacting to these events.`,
-            5000,
-            1
+            5000, 0, 45000, "social", 20
           ),
         ]);
 
@@ -561,7 +573,7 @@ export async function POST(request) {
           send("error", { phase: "social", message: "Failed to generate social content." });
         }
 
-        // ===== PHASE 2: Reference + Images (PARALLEL) =====
+        // ===== PHASE 2: Reference + Images (45s timeout, 1 retry) =====
         const articleHeadlines = result.articles.length > 0
           ? result.articles.map((a) => `${a.publication}: "${a.headline}"`).join("; ")
           : "No articles were generated — generate reference based on the event chronology alone.";
@@ -571,11 +583,10 @@ export async function POST(request) {
         status("Building Wikipedia, Google, and YouTube pages…", "reference", 60);
 
         const [phase2Result, imageUrls] = await Promise.allSettled([
-          callWithRetry(
+          withStatus(
             PHASE2_PROMPT,
             `Generate Wikipedia, Google search results, and YouTube videos for this scenario.\n\n${refContext}`,
-            5000,
-            1
+            5000, 1, 45000, "reference pages", 60
           ),
           fetchSerperImages(
             phase1aResult.status === "fulfilled" && phase1aResult.value.image_search_query
@@ -606,7 +617,6 @@ export async function POST(request) {
         result.image_urls = urls;
 
         if (urls.length > 0 && result.articles.length > 0) {
-          // Assign images to articles
           const articlesWithImages = result.articles.map((article, i) => ({
             ...article,
             image_url: urls[i % urls.length] || null,
@@ -634,6 +644,7 @@ export async function POST(request) {
           send("done", {});
         }
       } finally {
+        clearInterval(hb);
         closed = true;
         try { controller.close(); } catch {}
       }
