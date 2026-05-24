@@ -36,7 +36,7 @@ Return this EXACT JSON:
 }`;
 
 // ---- PHASE 1a: Articles + Op-Ed + Developments ----
-const PHASE1A_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate news articles, an op-ed, and breaking developments as if this really happened.
+const PHASE1A_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate news articles, an op-ed, and push notification alerts as if this really happened.
 
 CRITICAL: Each piece of content must cover a DIFFERENT event from the chronology. NEVER duplicate an event. NEVER write the same story twice.
 
@@ -74,18 +74,12 @@ A long-form opinion piece from a named columnist:
 - 3-5 sentences with sharp analysis and a clear argument
 - Use the columnist's well-known voice and ideological position
 
-## DEVELOPMENTS / BREAKING STATEMENTS (exactly 2-3)
-Self-contained breaking events, each with a type:
-- "resignation" — A key figure steps down
-- "statement" — Official press release or public statement
-- "endorsement" — Major figure endorses a candidate
-- "campaign_suspension" — A candidate suspends their campaign
-- "poll_release" — A major poll showing dramatic results
-- "leak" — A leaked document/memo/recording
-- "ruling" — Court or regulatory ruling
-- "protest_announcement" — Protests announced or beginning
-
-Each has: title (breaking news chyron), content (1-2 paragraph detail), source attribution, timestamp.
+## PUSH NOTIFICATIONS / BREAKING ALERTS (exactly 2-3)
+Simulate phone push notification alerts from news apps for the key breaking events:
+- "app_name" — The news app pushing the alert (BBC News, The Guardian, Sky News, CNN, Reuters, NYT, etc.)
+- "headline" — The breaking alert text, short and punchy like a real push notification
+- "preview" — 1-2 sentence preview text visible below the headline
+- "timestamp" — Relative time like "3m ago", "12m ago"
 
 ## IMAGE SEARCH
 Provide a highly specific Google Image search query for real-world photos of this scenario — include key names, locations, and year.
@@ -124,20 +118,18 @@ Return this EXACT JSON structure:
     "content": "What we are witnessing is not a leadership election. It is a slow-motion implosion of a party that has forgotten what it stands for. The membership is demanding purity at the exact moment the electorate is crying out for competence. I have covered Labour politics for four decades and I have never seen a contest this self-destructive. If the party wants to spend the next year debating socialism versus social democracy while the country faces a cost-of-living crisis, that is their prerogative — but don't expect the voters to wait around.",
     "timestamp": "12 hours ago"
   },
-  "developments": [
+  "notifications": [
     {
-      "type": "resignation",
-      "title": "Shadow Chancellor Resigns, Says Party 'Unrecognisable'",
-      "content": "The Shadow Chancellor has resigned from the frontbench with immediate effect, issuing a scathing resignation letter that warns the party is being captured by 'a faction that cares more about internal control than winning elections'. The letter, obtained by the BBC, describes the current leadership contest as 'a race to the margins'.",
-      "source": "Official Resignation Letter / BBC News",
-      "timestamp": "1 hour ago"
+      "app_name": "BBC News",
+      "headline": "BREAKING: Shadow Chancellor Resigns in Scathing Attack",
+      "preview": "Shadow Chancellor says party is 'choosing purity over power' in resignation letter seen by the BBC.",
+      "timestamp": "3m ago"
     },
     {
-      "type": "endorsement",
-      "title": "UNITE Union Endorses Left-Wing Candidate in Blow to Centrists",
-      "content": "UNITE, Britain's largest trade union, has formally endorsed the left-wing candidate in the Labour leadership contest. The endorsement delivers thousands of affiliated member votes and significant organisational resources. The union's general secretary said the candidate had 'the best plan to rebuild Britain'.",
-      "source": "UNITE Press Office",
-      "timestamp": "3 hours ago"
+      "app_name": "The Guardian",
+      "headline": "UNITE Union Endorses Left Candidate in Labour Leadership Race",
+      "preview": "UK's largest trade union throws weight behind left-wing candidate, delivering thousands of votes and significant resources.",
+      "timestamp": "12m ago"
     }
   ]
 }`;
@@ -240,36 +232,23 @@ Return this EXACT JSON structure:
 }`;
 
 // ---- PHASE 2: Reference ----
-const PHASE2_PROMPT = `You are an alternative-history content generator. Given a scenario, an event chronology, and article headlines, generate Wikipedia, Google search results, and YouTube videos as if this event really happened.
+const PHASE2_PROMPT = `You are an alternative-history content generator. Given a scenario, an event chronology, and article headlines, generate Wikipedia, Google search results, and a YouTube video as if this event really happened.
 
-## WIKIPEDIA ARTICLE (exactly 1)
-Write a comprehensive Wikipedia-style article about the central event.
-- Strictly neutral encyclopedic tone. No opinion. Attribute all claims.
-- Use "reportedly", "according to", "analysts noted" language.
-- Write in past tense. Include [citation needed] markers for realism.
-- Infobox: 5-7 fields including dates, key figures, locations, outcomes
-- Lead: 3-4 sentences introducing the event and its significance
-- Sections (3-4):
-  1. "Background" (3-4 sentences) — Context and what led to this
-  2. "Key Events" or "Campaign" (4-5 sentences) — Chronological account with specific dates, turning points, resignations
-  3. "Reactions" (3-4 sentences) — Domestic, international, media, market reactions
-  4. "Aftermath" (2-3 sentences) — What happened next, long-term significance
-- Categories: at least 5
+## WIKIPEDIA ARTICLE (exactly 1 — SHORT, just the essentials)
+- A concise infobox with 5-6 key fields (date, key figures, location, outcome)
+- A lead paragraph of 3-4 sentences introducing the event in neutral, encyclopedic tone
+- That's it — NO sections, NO categories. Just infobox + lead paragraph. Keep it tight.
 
-## GOOGLE SEARCH RESULTS (exactly 4)
-Natural search query. Mix of:
-- 1 Wikipedia article
-- 1-2 major news sites
-- 1 specialist/opinion site
-- 1 social media aggregator or forum
-Each result: realistic URL, clickable title, 2-line snippet.
+## GOOGLE SEARCH RESULTS (exactly 2)
+- Natural search query a real person would type
+- 1 Wikipedia article result + 1 major news site result
+- Each: realistic URL, clickable title, 2-line snippet
 
-## YOUTUBE VIDEOS (exactly 2)
-1. Mainstream news report (BBC News, Sky News, CNN, etc.)
-2. Commentary/analysis (Novara Media, TLDR News, Vox, The Rest Is Politics, etc.)
-Each: real channel name, clickbaity YouTube-style title, realistic views (500K-3M / 100K-800K), duration, description preview.
+## YOUTUBE VIDEO (exactly 1)
+- A mainstream news report (BBC News, Sky News, CNN, etc.)
+- Real channel name, YouTube-style title, realistic views (500K-3M), duration (3-10 min), upload timestamp
 
-Return this EXACT JSON structure:
+Return EXACTLY this JSON:
 {
   "wikipedia": {
     "title": "2028 Labour Party Leadership Election",
@@ -278,27 +257,14 @@ Return this EXACT JSON structure:
       "image_caption": "The winning candidate speaking at a victory rally in London",
       "fields": [
         { "label": "Date", "value": "15 September 2028" },
-        { "label": "Turnout", "value": "62.4%" },
         { "label": "Winner", "value": "Candidate Name" },
         { "label": "Runner-up", "value": "Candidate Name" },
+        { "label": "Turnout", "value": "62.4%" },
         { "label": "Predecessor", "value": "Previous Leader" },
         { "label": "Location", "value": "United Kingdom" }
       ]
     },
-    "lead": "The 2028 Labour Party leadership election was triggered by the resignation of the previous leader following the party's defeat in the 2027 general election. It was the fourth leadership contest in a decade, reflecting deep divisions within the party over electoral strategy and ideological direction.",
-    "sections": [
-      { "heading": "Background", "content": "Following the party's worst electoral performance since 2019, the outgoing leader announced their resignation, triggering a contest that would determine the future direction of the party. The election took place against a backdrop of declining membership numbers..." },
-      { "heading": "Campaign", "content": "The campaign period saw three candidates secure enough MP nominations to appear on the ballot. The contest was marked by several key moments including the Shadow Chancellor's dramatic resignation, a televised debate that descended into personal attacks..." },
-      { "heading": "Reactions", "content": "The result was met with sharply divided reactions across the political spectrum. The Conservative Party described the outcome as proof that Labour had 'learned nothing'. Meanwhile, international observers noted the significance of..." },
-      { "heading": "Aftermath", "content": "The newly elected leader immediately set about appointing a Shadow Cabinet widely described as an attempted 'unity ticket'. However, early opinion polls suggested that..." }
-    ],
-    "categories": [
-      "2028 in British politics",
-      "Labour Party (UK) leadership elections",
-      "September 2028 events in the United Kingdom",
-      "2028 elections in the United Kingdom",
-      "Political party leadership elections in the United Kingdom"
-    ]
+    "lead": "The 2028 Labour Party leadership election was triggered by the resignation of the previous leader following the party's defeat in the 2027 general election. The contest was won by [winner], who defeated [runner-up] with [percentage] of the membership vote. [One sentence about the significance or controversy]."
   },
   "google_results": {
     "query": "who won labour leadership election 2028",
@@ -306,22 +272,12 @@ Return this EXACT JSON structure:
       {
         "title": "2028 Labour Party Leadership Election - Wikipedia",
         "url": "https://en.wikipedia.org/wiki/2028_Labour_Party_leadership_election",
-        "snippet": "The 2028 Labour Party leadership election was held in September 2028 following the resignation of the previous leader. The contest was won by..."
+        "snippet": "The 2028 Labour Party leadership election was held in September 2028 following..."
       },
       {
         "title": "Labour leadership: [Winner] elected as new party leader — BBC News",
         "url": "https://www.bbc.co.uk/news/uk-politics-62908712",
-        "snippet": "[Winner] has been elected as the new leader of the Labour Party, defeating [runner-up] in a closely-fought contest. The result was announced at a special conference in London..."
-      },
-      {
-        "title": "What [Winner's] victory means for British politics — The Spectator",
-        "url": "https://www.spectator.co.uk/article/labour-leadership-winner-analysis",
-        "snippet": "The new Labour leader inherits a divided party and a sceptical electorate. Our political editor analyses what the result means for the next general election..."
-      },
-      {
-        "title": "r/LabourUK - Labour Leadership Results Megathread",
-        "url": "https://www.reddit.com/r/LabourUK/comments/leadership_results_2028/",
-        "snippet": "Official results megathread for the 2028 Labour leadership election. All reactions, analysis, and discussion here."
+        "snippet": "[Winner] has been elected as the new leader of the Labour Party, defeating [runner-up]. The result was announced at a special conference..."
       }
     ]
   },
@@ -332,15 +288,7 @@ Return this EXACT JSON structure:
       "views": "1.2M views",
       "timestamp": "8 hours ago",
       "duration": "6:42",
-      "description_preview": "Full coverage of the Labour leadership result. Includes the winner's victory speech, reaction from Westminster, and analysis from the BBC's political editor."
-    },
-    {
-      "title": "How Labour's New Leader Changes Everything | Novara Media",
-      "channel": "Novara Media",
-      "views": "340K views",
-      "timestamp": "2 days ago",
-      "duration": "28:15",
-      "description_preview": "Aaron Bastani and guests discuss the Labour leadership contest and what it means for the future of British politics."
+      "description_preview": "Full coverage of the Labour leadership result. Includes the victory speech and reaction from Westminster."
     }
   ]
 }`;
@@ -408,12 +356,15 @@ async function callLLM(systemPrompt, userMessage, maxTokens = 3000, timeoutMs = 
     if (!raw || !raw.trim()) throw new Error("Empty response body");
 
     const json = JSON.parse(raw);
-    const content = json?.choices?.[0]?.message?.content;
-    if (!content) throw new Error(`No content in response (keys: ${Object.keys(json).join(",")})`);
+  const content = json?.choices?.[0]?.message?.content;
+  if (!content) throw new Error(`No content in response (keys: ${Object.keys(json).join(",")})`);
 
-    const parsed = JSON.parse(content);
-    console.log(`[LLM] ok (${Date.now() - t0}ms, ${Object.keys(parsed).length} top keys)`);
-    return parsed;
+  // Strip ```json fences — some models wrap output in markdown code blocks
+  const cleaned = content.replace(/^```json\s*\n?/m, "").replace(/\n?```\s*$/, "");
+
+  const parsed = JSON.parse(cleaned);
+  console.log(`[LLM] ok (${Date.now() - t0}ms, ${Object.keys(parsed).length} top keys)`);
+  return parsed;
   } catch (err) {
     if (err.name === "AbortError") {
       console.error(`[LLM] TIMEOUT after ${Date.now() - t0}ms`);
@@ -496,6 +447,7 @@ export async function POST(request) {
         articles: [],
         oped: null,
         developments: [],
+        notifications: [],
         tweets: [],
         reddit_posts: [],
         facebook_post: null,
@@ -528,17 +480,17 @@ export async function POST(request) {
         const [phase1aResult, phase1bResult] = await Promise.allSettled([
           withStatus(
             PHASE1A_PROMPT,
-            `${eventContext}\n\nGenerate 8 news articles, 1 op-ed, and 2-3 breaking developments. Each must cover a DIFFERENT event from the chronology above.`,
-            7000, 1, 60000, "articles", 20
+            `${eventContext}\n\nGenerate 8 news articles, 1 op-ed, and 2-3 push notification alerts. Each must cover a DIFFERENT event from the chronology above.`,
+            7000, 1, 75000, "articles", 20
           ),
           withStatus(
             PHASE1B_PROMPT,
             `${eventContext}\n\nGenerate 6 tweets, 4 Reddit posts, and 1 Facebook post reacting to these events.`,
-            5000, 0, 45000, "social", 20
+            6000, 1, 45000, "social", 20
           ),
         ]);
 
-        // Process Phase 1a (articles + op-ed + developments)
+        // Process Phase 1a (articles + op-ed + notifications)
         if (phase1aResult.status === "fulfilled") {
           const d = phase1aResult.value;
           if (d.articles) {
@@ -546,15 +498,16 @@ export async function POST(request) {
             gotData = true;
           }
           if (d.oped) { result.oped = d.oped; }
-          if (d.developments) { result.developments = d.developments; }
+          if (d.notifications) { result.notifications = d.notifications; }
           send("data", {
             articles: result.articles,
             oped: result.oped,
-            developments: result.developments,
+            notifications: result.notifications,
           });
         } else {
-          console.error("[Phase 1a] Failed:", phase1aResult.reason.message);
-          send("error", { phase: "content", message: "Failed to generate articles. Other content may still appear." });
+          const msg = phase1aResult.reason.message || "Unknown error";
+          console.error("[Phase 1a] Failed:", msg);
+          send("error", { phase: "content", message: `Article generation failed: ${msg.substring(0, 300)}` });
         }
 
         // Process Phase 1b (tweets + reddit + facebook)
@@ -569,8 +522,9 @@ export async function POST(request) {
             facebook_post: result.facebook_post,
           });
         } else {
-          console.error("[Phase 1b] Failed:", phase1bResult.reason.message);
-          send("error", { phase: "social", message: "Failed to generate social content." });
+          const msg = phase1bResult.reason.message || "Unknown error";
+          console.error("[Phase 1b] Failed:", msg);
+          send("error", { phase: "social", message: `Social content failed: ${msg.substring(0, 300)}` });
         }
 
         // ===== PHASE 2: Reference + Images (45s timeout, 1 retry) =====
@@ -586,7 +540,7 @@ export async function POST(request) {
           withStatus(
             PHASE2_PROMPT,
             `Generate Wikipedia, Google search results, and YouTube videos for this scenario.\n\n${refContext}`,
-            5000, 1, 45000, "reference pages", 60
+            3000, 1, 60000, "reference pages", 60
           ),
           fetchSerperImages(
             phase1aResult.status === "fulfilled" && phase1aResult.value.image_search_query
@@ -608,8 +562,9 @@ export async function POST(request) {
           });
           gotData = true;
         } else {
-          console.error("[Phase 2] Failed:", phase2Result.reason.message);
-          send("error", { phase: "reference", message: "Failed to generate reference pages." });
+          const msg = phase2Result.reason.message || "Unknown error";
+          console.error("[Phase 2] Failed:", msg);
+          send("error", { phase: "reference", message: `Reference pages failed: ${msg.substring(0, 300)}` });
         }
 
         // Process images
@@ -624,9 +579,12 @@ export async function POST(request) {
           result.articles = articlesWithImages;
           const opedImage = result.oped ? { ...result.oped, image_url: urls[Math.min(result.articles.length, urls.length - 1)] || null } : null;
           if (result.oped) result.oped = opedImage;
+          const wikiImage = result.wikipedia ? { ...result.wikipedia, image_url: urls[urls.length - 1] || null } : null;
+          if (result.wikipedia) result.wikipedia = wikiImage;
           send("data", {
             articles: result.articles,
             oped: result.oped,
+            wikipedia: result.wikipedia,
             image_urls: urls,
           });
         } else if (urls.length > 0) {
@@ -636,11 +594,12 @@ export async function POST(request) {
         status("Finalising timeline…", "done", 100);
         send("done", {});
       } catch (err) {
-        console.error("[Fatal] Generation failed:", err.message);
+        const msg = err.message || "Unknown error";
+        console.error("[Fatal] Generation failed:", msg);
         if (!gotData) {
-          send("fatal_error", { message: err.message });
+          send("fatal_error", { message: msg });
         } else {
-          send("error", { phase: "fatal", message: err.message });
+          send("error", { phase: "fatal", message: `Generation interrupted: ${msg.substring(0, 300)}` });
           send("done", {});
         }
       } finally {

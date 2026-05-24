@@ -202,7 +202,8 @@ body {
   max-width: 600px;
 }
 
-.scenario-form input[type="text"] {
+.scenario-form input[type="text"],
+.scenario-form textarea {
   flex: 1;
   font-family: var(--font-meta);
   font-size: 1rem;
@@ -213,13 +214,19 @@ body {
   background: var(--background-color);
   color: var(--text-color);
   transition: border-color 0.2s;
+  resize: none;
+  min-height: 48px;
+  max-height: 40vh;
+  line-height: 1.5;
 }
 
-.scenario-form input[type="text"]:focus {
+.scenario-form input[type="text"]:focus,
+.scenario-form textarea:focus {
   border-color: var(--accent-color);
 }
 
-.scenario-form input[type="text"]::placeholder {
+.scenario-form input[type="text"]::placeholder,
+.scenario-form textarea::placeholder {
   color: var(--medium-gray);
   font-style: italic;
 }
@@ -458,17 +465,39 @@ body {
   z-index: 100;
 }
 
-.toolbar-left .scenario-label {
+.scenario-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: var(--font-meta);
   font-size: 0.8rem;
+  font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
 }
 
-.toolbar-left .scenario-label strong {
+.scenario-toggle:hover {
+  background: var(--light-gray);
   color: var(--primary-color);
-  font-weight: 700;
+}
+
+.scenario-toggle-label {
+  margin-left: 2px;
+}
+
+.toolbar-left .scenario-label {
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  margin-left: 8px;
+  padding: 4px 0;
 }
 
 .toolbar-right {
@@ -552,12 +581,17 @@ body {
   border-color: #38444D;
 }
 
-.dark-mode .toolbar-left .scenario-label {
+.dark-mode .scenario-toggle {
   color: #8899A6;
 }
 
-.dark-mode .toolbar-left .scenario-label strong {
-  color: #FFFFFF;
+.dark-mode .scenario-toggle:hover {
+  background: #253341;
+  color: #F1F1F1;
+}
+
+.dark-mode .toolbar-left .scenario-label {
+  color: #F1F1F1;
 }
 
 .dark-mode .toolbar-btn {
@@ -1026,6 +1060,13 @@ body {
 
 .wiki-infobox-image-placeholder::after {
   content: '[Image]';
+}
+
+.wiki-infobox-image {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  display: block;
 }
 
 .wiki-infobox-caption {
@@ -1660,68 +1701,70 @@ body {
 }
 
 /* ===================================================================
-   STATEMENT / BREAKING DEVELOPMENT CARD
+   PUSH NOTIFICATION CARD
    =================================================================== */
 
-.statement-card {
-  background: var(--st-bg, #FFFFFF);
-  border: 1px solid var(--st-border, #E2E2E2);
-  border-left: 4px solid var(--st-accent, #666);
-  font-family: "Arial", "Helvetica", sans-serif;
+.push-notif-card {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   cursor: default;
-  overflow: hidden;
-  border-radius: 4px;
-  padding: 16px;
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  max-width: 360px;
 }
 
-.statement-card__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: "Arial", "Helvetica", sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--st-accent, #CC0000);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  background: var(--st-bg, #FFF5F5);
-  padding: 4px 10px;
-  border-radius: 3px;
-}
-
-.statement-card__title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1A1A1A;
-  line-height: 1.3;
-  margin-bottom: 8px;
-}
-
-.statement-card__content {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #444;
-  margin-bottom: 12px;
-}
-
-.statement-card__footer {
+.push-notif__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px solid var(--st-border, #E2E2E2);
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.statement-card__source {
+.push-notif__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.push-notif__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.push-notif__app-name {
   font-size: 12px;
-  color: var(--st-accent, #666);
   font-weight: 600;
+  color: #555;
 }
 
-.statement-card__timestamp {
+.push-notif__timestamp {
   font-size: 11px;
   color: #999;
+}
+
+.push-notif__headline {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1A1A;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.push-notif__preview {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.45;
 }
 
 /* ===================================================================
@@ -2059,25 +2102,27 @@ body {
   color: #B0B3B8;
 }
 
-/* Dark mode Statement */
-.dark-mode .statement-card {
-  background: #1A2733;
+/* Dark mode Push Notifications */
+.dark-mode .push-notif-card {
+  background: #1C1C2E;
+  border-color: #2A2A3E;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-.dark-mode .statement-card__title {
+.dark-mode .push-notif__app-name {
+  color: #999;
+}
+
+.dark-mode .push-notif__timestamp {
+  color: #666;
+}
+
+.dark-mode .push-notif__headline {
   color: #E7E9EA;
 }
 
-.dark-mode .statement-card__content {
-  color: #B0B3B8;
-}
-
-.dark-mode .statement-card__footer {
-  border-color: #2A3A4A;
-}
-
-.dark-mode .statement-card__timestamp {
-  color: #777;
+.dark-mode .push-notif__preview {
+  color: #8899A6;
 }
 
 /* ===================================================================
@@ -2456,12 +2501,16 @@ body {
     flex-direction: column;
   }
 
-  .scenario-form input[type="text"] {
+  .scenario-form input[type="text"],
+  .scenario-form textarea {
     border-right: 2px solid var(--primary-color);
     border-bottom: none;
+    max-height: 60vh;
+    min-height: 10vh;
   }
 
-  .scenario-form input[type="text"]:focus {
+  .scenario-form input[type="text"]:focus,
+  .scenario-form textarea:focus {
     border-color: var(--accent-color);
   }
 
@@ -2496,6 +2545,15 @@ body {
   .landing-container .landing-icon {
     width: 80px;
     height: 80px;
+  }
+  .scenario-form {
+    max-height: none;
+    min-height: 25vh;
+  }
+
+.scenario-form input[type="text"],
+.scenario-form textarea {
+    max-height: 80vh;
   }
 
   .news-card__headline {

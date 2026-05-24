@@ -36,7 +36,11 @@ export default function WikipediaCard({ data }) {
             <div className="wiki-infobox-header">{data.title}</div>
             {data.infobox.image_caption && (
               <div className="wiki-infobox-image-area">
-                <div className="wiki-infobox-image-placeholder" />
+                {data.image_url ? (
+                  <img src={data.image_url} alt={data.infobox.image_caption} className="wiki-infobox-image" />
+                ) : (
+                  <div className="wiki-infobox-image-placeholder" />
+                )}
                 <div className="wiki-infobox-caption">{data.infobox.image_caption}</div>
               </div>
             )}

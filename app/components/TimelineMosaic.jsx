@@ -13,7 +13,7 @@ import GoogleResultsCard from "./GoogleResultsCard";
 import YouTubeCard from "./YouTubeCard";
 import FacebookCard from "./FacebookCard";
 import OpEdCard from "./OpEdCard";
-import StatementCard from "./StatementCard";
+import PushNotificationCard from "./PushNotificationCard";
 
 /**
  * Build a shuffled array of timeline items from all content types.
@@ -34,10 +34,10 @@ function buildTimelineItems(data) {
     items.push({ type: "oped", data: data.oped, priority: 1, id: "oped-0" });
   }
 
-  // Developments / Breaking statements
-  if (data.developments) {
-    data.developments.forEach((dev, i) => {
-      items.push({ type: "statement", data: dev, priority: 1, id: `statement-${i}` });
+  // Push Notifications
+  if (data.notifications) {
+    data.notifications.forEach((notif, i) => {
+      items.push({ type: "notification", data: notif, priority: 1, id: `notif-${i}` });
     });
   }
 
@@ -84,7 +84,7 @@ function buildTimelineItems(data) {
   const news = items.filter((i) => i.type === "news");
   const social = items.filter((i) => ["tweet", "reddit", "facebook"].includes(i.type));
   const reference = items.filter((i) => ["wikipedia", "google", "youtube"].includes(i.type));
-  const developments = items.filter((i) => ["oped", "statement"].includes(i.type));
+  const developments = items.filter((i) => ["oped", "notification"].includes(i.type));
 
   const interleaved = [];
   let ni = 0, si = 0, ri = 0, di = 0;
@@ -136,8 +136,8 @@ function TimelineItem({ item }) {
       return <FacebookCard post={item.data} />;
     case "oped":
       return <OpEdCard oped={item.data} />;
-    case "statement":
-      return <StatementCard development={item.data} />;
+    case "notification":
+      return <PushNotificationCard notification={item.data} />;
     default:
       return null;
   }

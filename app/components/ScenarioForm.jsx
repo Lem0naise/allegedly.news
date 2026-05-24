@@ -20,7 +20,7 @@ const LOADING_MESSAGES = [
 const ITEM_LABELS = {
   articles: "articles",
   oped: "op-eds",
-  developments: "developments",
+  notifications: "notifications",
   tweets: "tweets",
   reddit_posts: "Reddit posts",
   facebook_post: "Facebook posts",
@@ -58,7 +58,7 @@ function countItems(data) {
   let count = 0;
   if (data.articles?.length) count += data.articles.length;
   if (data.oped) count += 1;
-  if (data.developments?.length) count += data.developments.length;
+  if (data.notifications?.length) count += data.notifications.length;
   if (data.tweets?.length) count += data.tweets.length;
   if (data.reddit_posts?.length) count += data.reddit_posts.length;
   if (data.facebook_post) count += 1;
@@ -80,6 +80,7 @@ export default function ScenarioForm() {
   const [darkMode, setDarkMode] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [waitTime, setWaitTime] = useState(0);
+  const [showScenario, setShowScenario] = useState(false);
   const timelineRef = useRef(null);
   const abortRef = useRef(null);
   const waitTimerRef = useRef(null);
@@ -137,7 +138,7 @@ export default function ScenarioForm() {
       let accumulated = {
         articles: [],
         oped: null,
-        developments: [],
+        notifications: [],
         tweets: [],
         reddit_posts: [],
         facebook_post: null,
@@ -266,13 +267,23 @@ export default function ScenarioForm() {
           media timeline: news, tweets, Reddit posts, Wikipedia entries, and more.
         </p>
         <form className="scenario-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
+          <textarea
             id="scenario-input"
             value={scenario}
             onChange={(e) => setScenario(e.target.value)}
+            onInput={(e) => {
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (scenario.trim()) handleSubmit(e);
+              }
+            }}
             placeholder="If Jeremy Corbyn won in 2017..."
             autoFocus
+            rows={1}
           />
           <button type="submit" id="generate-btn" disabled={!scenario.trim()}>
             Generate Timeline
@@ -352,9 +363,25 @@ export default function ScenarioForm() {
       {/* Toolbar */}
       <div className="timeline-toolbar">
         <div className="toolbar-left">
-          <p className="scenario-label">
-            Scenario: <strong>&ldquo;{submittedScenario}&rdquo;</strong>
-          </p>
+          <button
+            className="scenario-toggle"
+            onClick={() => setShowScenario(!showScenario)}
+            title={showScenario ? "Hide scenario" : "Show scenario"}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="currentColor"
+              style={{ transform: showScenario ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+            >
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+            <span className="scenario-toggle-label">Scenario</span>
+          </button>
+          {showScenario && (
+            <p className="scenario-label">{submittedScenario}</p>
+          )}
         </div>
         <div className="toolbar-right">
           <button
