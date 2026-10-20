@@ -256,6 +256,20 @@ body {
   cursor: not-allowed;
 }
 
+/* Live character counter under the scenario input */
+.scenario-hint {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+  letter-spacing: 0.3px;
+}
+
+.scenario-hint__count--limit {
+  color: #c0392b;
+  font-weight: 700;
+}
+
 /* ===== Loading State ===== */
 .loading-container {
   display: flex;
@@ -307,6 +321,10 @@ body {
 .loading-container .loading-warning span {
   font-weight: 400;
   color: var(--text-muted);
+}
+
+.loading-container .loading-cancel {
+  margin-top: 0.5rem;
 }
 
 /* Loading bar */
@@ -399,6 +417,154 @@ body {
   border-color: #c0392b;
 }
 
+/* ===== Section Failures (partial generation) ===== */
+.section-errors {
+  margin: 0 1rem 1rem;
+  padding: 12px 16px;
+  border: 1px solid #e74c3c;
+  border-left: 4px solid #c0392b;
+  background: #fdf2f2;
+  font-family: var(--font-meta);
+}
+
+.section-errors__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8e2a20;
+  margin-bottom: 10px;
+}
+
+.section-errors__retry-all,
+.section-error__retry {
+  flex-shrink: 0;
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.4rem 0.8rem;
+  border: 2px solid #c0392b;
+  background: transparent;
+  color: #c0392b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.section-errors__retry-all:hover:not(:disabled),
+.section-error__retry:hover:not(:disabled) {
+  background: #c0392b;
+  color: #fff;
+}
+
+.section-errors__retry-all:disabled,
+.section-error__retry:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.section-errors__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-error {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 10px;
+  border-top: 1px solid rgba(192, 57, 43, 0.25);
+}
+
+.section-error:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.section-error__text strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #8e2a20;
+  margin-bottom: 2px;
+}
+
+.section-error__text p {
+  font-size: 0.85rem;
+  color: var(--secondary-color);
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+
+.section-error__hint {
+  color: #8e2a20 !important;
+  font-weight: 600;
+}
+
+.section-error__details,
+.error-banner__details {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.section-error__details summary,
+.error-banner__details summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-error__details code,
+.error-banner__details code {
+  display: block;
+  margin-top: 4px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.06);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.dark-mode .section-errors {
+  background: #2A1A1A;
+  border-color: #c0392b;
+}
+
+.dark-mode .section-errors__head,
+.dark-mode .section-error__hint,
+.dark-mode .section-error__text strong {
+  color: #F5B7B1;
+}
+
+.dark-mode .section-error__text p {
+  color: #E7E9EA;
+}
+
+.dark-mode .section-error {
+  border-top-color: rgba(231, 76, 60, 0.35);
+}
+
+.dark-mode .section-error__details code,
+.dark-mode .error-banner__details code {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-empty {
+  font-family: var(--font-meta);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
 /* ===== Error State ===== */
 .error-banner {
   max-width: 600px;
@@ -441,6 +607,27 @@ body {
 .error-banner button:hover {
   background: var(--accent-color);
   border-color: var(--accent-color);
+}
+
+.error-banner__hint {
+  font-family: var(--font-meta);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c0392b;
+  margin-bottom: 1rem;
+}
+
+.error-banner__details {
+  margin-bottom: 1rem;
+}
+
+.dark-mode .error-banner {
+  background: #2A1A1A;
+  border-color: #c0392b;
+}
+
+.dark-mode .error-banner p {
+  color: #E7E9EA;
 }
 
 /* ===================================================================
@@ -566,6 +753,21 @@ body {
   margin-bottom: 1.25rem;
   display: inline-block;
   width: 100%;
+}
+
+/* Neutral placeholder when a third-party image cannot load */
+.image-fallback {
+  width: 100%;
+  min-height: 140px;
+  background:
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.04) 0 10px, transparent 10px 20px),
+    #ECECEC;
+}
+
+.dark-mode .image-fallback {
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 10px, transparent 10px 20px),
+    #253341;
 }
 
 /* ===================================================================

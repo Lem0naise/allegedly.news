@@ -1,5 +1,7 @@
 "use client";
 
+import SafeImage from "./SafeImage";
+
 /**
  * OpEdCard — opinion piece / editorial card with author byline and publication
  */
@@ -36,7 +38,7 @@ export default function OpEdCard({ oped }) {
       {/* Image */}
       {oped.image_url && (
         <div className="oped-card__image-wrap">
-          <img src={oped.image_url} alt={oped.headline} className="oped-card__image" />
+          <SafeImage src={oped.image_url} alt={oped.headline} className="oped-card__image" />
         </div>
       )}
 

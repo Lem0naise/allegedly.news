@@ -1,11 +1,9 @@
-import { NextResponse } from "next/server";
+// Prompt templates for the four generation phases.
+// Extracted from the original single-endpoint generator; text kept as-is except for
+// the removed phase-1b image query.
+// Keep each prompt and its JSON example in sync with the route and the card props.
 
-// ---- Configuration ----
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || "deepseek-v4-flash";
-
-// ---- PHASE 0: Event Chronology ----
-const PHASE0_PROMPT = `You are an alternative-history planner. Given a scenario, generate a detailed chronological sequence of events as if the scenario really happened.
+export const PHASE0_PROMPT = `You are an alternative-history planner. Given a scenario, generate a detailed chronological sequence of events as if the scenario really happened.
 
 Generate 6-8 distinct events in chronological order, covering:
 1. The initial trigger (announcement, incident, result, decision)
@@ -35,8 +33,7 @@ Return this EXACT JSON:
   ]
 }`;
 
-// ---- PHASE 1a: Articles + Op-Ed + Developments ----
-const PHASE1A_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate news articles, an op-ed, and push notification alerts as if this really happened.
+export const PHASE1A_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate news articles, an op-ed, and push notification alerts as if this really happened.
 
 CRITICAL: Each piece of content must cover a DIFFERENT event from the chronology. NEVER duplicate an event. NEVER write the same story twice.
 
@@ -134,8 +131,7 @@ Return this EXACT JSON structure:
   ]
 }`;
 
-// ---- PHASE 1b: Social Content ----
-const PHASE1B_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate social media content as if this really happened.
+export const PHASE1B_PROMPT = `You are an alternative-history content generator. Given a scenario and a sequence of events, generate social media content as if this really happened.
 
 ## TWEETS (exactly 6)
 From real public figures who would plausibly comment. Each tweet must sound EXACTLY like that person actually writes:
@@ -167,12 +163,8 @@ From real subreddits: r/worldnews, r/politics, r/unitedkingdom, r/europe, r/news
 - The shared article must reference a real-sounding headline and source.
 - Include realistic reaction mix and a top comment with reply feel.
 
-## IMAGE SEARCH
-Provide a highly specific Google Image search query for real-world photos — include key names, locations, and year.
-
 Return this EXACT JSON structure:
 {
-  "image_search_query": "Jeremy Corbyn 2024 Labour conference speech",
   "tweets": [
     {
       "author_name": "Piers Morgan",
@@ -231,8 +223,7 @@ Return this EXACT JSON structure:
   }
 }`;
 
-// ---- PHASE 2: Reference ----
-const PHASE2_PROMPT = `You are an alternative-history content generator. Given a scenario, an event chronology, and article headlines, generate Wikipedia, Google search results, and a YouTube video as if this event really happened.
+export const PHASE2_PROMPT = `You are an alternative-history content generator. Given a scenario, an event chronology, and article headlines, generate Wikipedia, Google search results, and a YouTube video as if this event really happened.
 
 ## WIKIPEDIA ARTICLE (exactly 1 — SHORT, just the essentials)
 - A concise infobox with 5-6 key fields (date, key figures, location, outcome)
@@ -293,328 +284,3 @@ Return EXACTLY this JSON:
   ]
 }`;
 
-export const maxDuration = 120;
-
-// ---- Serper.dev Google Image Search ----
-async function fetchSerperImages(query, count = 10) {
-  const apiKey = process.env.SERPER_API_KEY;
-  if (!apiKey) return [];
-
-  try {
-    const res = await fetch("https://google.serper.dev/images", {
-      method: "POST",
-      headers: { "X-API-KEY": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify({ q: query }),
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    if (!data.images || !Array.isArray(data.images)) return [];
-    const blocked = ["lookaside.instagram.com", "scontent.cdninstagram.com", "lookaside.fbsbx.com", "www.tiktok.com", "fbcdn.net"];
-    return data.images.filter((img) => !blocked.some((b) => img.imageUrl.toLowerCase().includes(b))).slice(0, count).map((img) => img.imageUrl);
-  } catch {
-    return [];
-  }
-}
-
-// ---- Call OpenRouter LLM with timeout ----
-async function callLLM(systemPrompt, userMessage, maxTokens = 3000, timeoutMs = 45000) {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), timeoutMs);
-  const t0 = Date.now();
-
-  console.log(`[LLM] start (${maxTokens}tok, ${timeoutMs}ms timeout)`);
-
-  try {
-    const res = await fetch(OPENROUTER_API_URL, {
-      signal: abort.signal,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://allegedly.news",
-        "X-Title": "Allegedly News",
-      },
-      body: JSON.stringify({
-        model: OPENROUTER_MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.9,
-        max_tokens: maxTokens,
-      }),
-    });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`OpenRouter ${res.status}: ${text.substring(0, 200)}`);
-    }
-
-    const raw = await res.text();
-    if (!raw || !raw.trim()) throw new Error("Empty response body");
-
-    const json = JSON.parse(raw);
-  const content = json?.choices?.[0]?.message?.content;
-  if (!content) throw new Error(`No content in response (keys: ${Object.keys(json).join(",")})`);
-
-  // Strip ```json fences — some models wrap output in markdown code blocks
-  const cleaned = content.replace(/^```json\s*\n?/m, "").replace(/\n?```\s*$/, "");
-
-  const parsed = JSON.parse(cleaned);
-  console.log(`[LLM] ok (${Date.now() - t0}ms, ${Object.keys(parsed).length} top keys)`);
-  return parsed;
-  } catch (err) {
-    if (err.name === "AbortError") {
-      console.error(`[LLM] TIMEOUT after ${Date.now() - t0}ms`);
-      throw new Error(`LLM timed out after ${timeoutMs / 1000}s`);
-    }
-    console.error(`[LLM] fail at ${Date.now() - t0}ms: ${err.message}`);
-    throw err;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-// ---- Retry wrapper with status callback ----
-async function callWithRetry(systemPrompt, userMessage, maxTokens, retries = 1, timeoutMs = 45000, onRetry) {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await callLLM(systemPrompt, userMessage, maxTokens, timeoutMs);
-    } catch (err) {
-      if (i === retries) throw err;
-      console.log(`[LLM] retry ${i + 1}/${retries}: ${err.message}`);
-      if (onRetry) onRetry(i + 1, retries);
-      await new Promise((r) => setTimeout(r, 2000));
-    }
-  }
-}
-
-// ---- SSE helpers ----
-const encoder = new TextEncoder();
-
-function sseEvent(controller, event, data) {
-  try {
-    controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-  } catch (e) {
-    console.error("[SSE] send failed:", e.message);
-  }
-}
-
-function sseStatus(controller, message, phase, progress) {
-  sseEvent(controller, "status", { message, phase, progress });
-}
-
-// ---- Main SSE handler ----
-export async function POST(request) {
-  if (!process.env.OPENROUTER_API_KEY) {
-    return NextResponse.json({ error: "Missing OPENROUTER_API_KEY" }, { status: 500 });
-  }
-
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
-
-  const { scenario } = body;
-  if (!scenario || typeof scenario !== "string" || !scenario.trim()) {
-    return NextResponse.json({ error: "Please provide a scenario" }, { status: 400 });
-  }
-
-  const trimmedScenario = scenario.trim();
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      let closed = false;
-      const send = (event, data) => { if (!closed) sseEvent(controller, event, data); };
-      const status = (msg, phase, progress) => { if (!closed) sseStatus(controller, msg, phase, progress); };
-
-      // Heartbeat every 5s so the frontend knows the server is alive
-      const hb = setInterval(() => send("heartbeat", { t: Date.now() }), 5000);
-
-      // Helper for retry-visible callWithRetry
-      const withStatus = (prompt, msg, maxTok, retries, timeout, phaseLabel, progressVal) => {
-        return callWithRetry(prompt, msg, maxTok, retries, timeout, (a, t) => {
-          status(`Retrying ${phaseLabel} (${a}/${t})…`, "generating", progressVal);
-        });
-      };
-
-      // Accumulated state for the frontend
-      let result = {
-        articles: [],
-        oped: null,
-        developments: [],
-        notifications: [],
-        tweets: [],
-        reddit_posts: [],
-        facebook_post: null,
-        wikipedia: null,
-        google_results: null,
-        youtube_videos: [],
-        image_urls: [],
-      };
-
-      // Whether we've received any data — determines fatal vs partial error
-      let gotData = false;
-
-      try {
-        // ===== PHASE 0: Event Chronology (30s timeout, 2 retries) =====
-        status("Creating event timeline…", "planning", 5);
-        const phase0 = await withStatus(
-          PHASE0_PROMPT,
-          `Generate an event chronology for this alternative-history scenario: "${trimmedScenario}"`,
-          2000, 2, 30000, "event timeline", 5
-        );
-        const events = phase0?.events || [];
-        const eventsSummary = events.map((e, i) =>
-          `${i + 1}. ${e.title}: ${e.description}`
-        ).join("\n\n");
-        const eventContext = `Scenario: "${trimmedScenario}"\n\nEvent Chronology:\n${eventsSummary}`;
-
-        // ===== PHASE 1a + 1b (60s + 45s timeouts, 1 retry each) =====
-        status("Writing articles and social posts…", "generating", 20);
-
-        const [phase1aResult, phase1bResult] = await Promise.allSettled([
-          withStatus(
-            PHASE1A_PROMPT,
-            `${eventContext}\n\nGenerate 8 news articles, 1 op-ed, and 2-3 push notification alerts. Each must cover a DIFFERENT event from the chronology above.`,
-            7000, 1, 75000, "articles", 20
-          ),
-          withStatus(
-            PHASE1B_PROMPT,
-            `${eventContext}\n\nGenerate 6 tweets, 4 Reddit posts, and 1 Facebook post reacting to these events.`,
-            6000, 1, 45000, "social", 20
-          ),
-        ]);
-
-        // Process Phase 1a (articles + op-ed + notifications)
-        if (phase1aResult.status === "fulfilled") {
-          const d = phase1aResult.value;
-          if (d.articles) {
-            result.articles = d.articles;
-            gotData = true;
-          }
-          if (d.oped) { result.oped = d.oped; }
-          if (d.notifications) { result.notifications = d.notifications; }
-          send("data", {
-            articles: result.articles,
-            oped: result.oped,
-            notifications: result.notifications,
-          });
-        } else {
-          const msg = phase1aResult.reason.message || "Unknown error";
-          console.error("[Phase 1a] Failed:", msg);
-          send("error", { phase: "content", message: `Article generation failed: ${msg.substring(0, 300)}` });
-        }
-
-        // Process Phase 1b (tweets + reddit + facebook)
-        if (phase1bResult.status === "fulfilled") {
-          const d = phase1bResult.value;
-          if (d.tweets) { result.tweets = d.tweets; gotData = true; }
-          if (d.reddit_posts) { result.reddit_posts = d.reddit_posts; }
-          if (d.facebook_post) { result.facebook_post = d.facebook_post; }
-          send("data", {
-            tweets: result.tweets,
-            reddit_posts: result.reddit_posts,
-            facebook_post: result.facebook_post,
-          });
-        } else {
-          const msg = phase1bResult.reason.message || "Unknown error";
-          console.error("[Phase 1b] Failed:", msg);
-          send("error", { phase: "social", message: `Social content failed: ${msg.substring(0, 300)}` });
-        }
-
-        // ===== PHASE 2: Reference + Images (45s timeout, 1 retry) =====
-        const articleHeadlines = result.articles.length > 0
-          ? result.articles.map((a) => `${a.publication}: "${a.headline}"`).join("; ")
-          : "No articles were generated — generate reference based on the event chronology alone.";
-
-        const refContext = `${eventContext}\n\nArticle headlines:\n${articleHeadlines}`;
-
-        status("Building Wikipedia, Google, and YouTube pages…", "reference", 60);
-
-        const [phase2Result, imageUrls] = await Promise.allSettled([
-          withStatus(
-            PHASE2_PROMPT,
-            `Generate Wikipedia, Google search results, and YouTube videos for this scenario.\n\n${refContext}`,
-            3000, 1, 60000, "reference pages", 60
-          ),
-          fetchSerperImages(
-            phase1aResult.status === "fulfilled" && phase1aResult.value.image_search_query
-              ? phase1aResult.value.image_search_query
-              : trimmedScenario,
-            10
-          ),
-        ]);
-
-        if (phase2Result.status === "fulfilled") {
-          const d = phase2Result.value;
-          if (d.youtube_videos) { result.youtube_videos = d.youtube_videos; }
-          if (d.wikipedia) { result.wikipedia = d.wikipedia; }
-          if (d.google_results) { result.google_results = d.google_results; }
-          send("data", {
-            youtube_videos: result.youtube_videos,
-            wikipedia: result.wikipedia,
-            google_results: result.google_results,
-          });
-          gotData = true;
-        } else {
-          const msg = phase2Result.reason.message || "Unknown error";
-          console.error("[Phase 2] Failed:", msg);
-          send("error", { phase: "reference", message: `Reference pages failed: ${msg.substring(0, 300)}` });
-        }
-
-        // Process images
-        const urls = imageUrls.status === "fulfilled" ? imageUrls.value : [];
-        result.image_urls = urls;
-
-        if (urls.length > 0 && result.articles.length > 0) {
-          const articlesWithImages = result.articles.map((article, i) => ({
-            ...article,
-            image_url: urls[i % urls.length] || null,
-          }));
-          result.articles = articlesWithImages;
-          const opedImage = result.oped ? { ...result.oped, image_url: urls[Math.min(result.articles.length, urls.length - 1)] || null } : null;
-          if (result.oped) result.oped = opedImage;
-          const wikiImage = result.wikipedia ? { ...result.wikipedia, image_url: urls[urls.length - 1] || null } : null;
-          if (result.wikipedia) result.wikipedia = wikiImage;
-          send("data", {
-            articles: result.articles,
-            oped: result.oped,
-            wikipedia: result.wikipedia,
-            image_urls: urls,
-          });
-        } else if (urls.length > 0) {
-          send("data", { image_urls: urls });
-        }
-
-        status("Finalising timeline…", "done", 100);
-        send("done", {});
-      } catch (err) {
-        const msg = err.message || "Unknown error";
-        console.error("[Fatal] Generation failed:", msg);
-        if (!gotData) {
-          send("fatal_error", { message: msg });
-        } else {
-          send("error", { phase: "fatal", message: `Generation interrupted: ${msg.substring(0, 300)}` });
-          send("done", {});
-        }
-      } finally {
-        clearInterval(hb);
-        closed = true;
-        try { controller.close(); } catch {}
-      }
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
-    },
-  });
-}

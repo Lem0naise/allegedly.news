@@ -1,10 +1,13 @@
 "use client";
 
+import SafeImage from "./SafeImage";
+
 /**
  * NewsCard — publication-specific styled news headline card
  * Supports: NYT, BBC, Fox News, The Guardian, CNN, Al Jazeera, Reuters,
  *           Daily Mail, Washington Post, The Times, Sky News, New York Post,
- *           The Onion, Le Monde
+ *           The Onion, Le Monde, The Economist, Politico, The Spectator,
+ *           Der Spiegel, El Pais
  */
 
 const PUBLICATION_STYLES = {
@@ -190,6 +193,71 @@ const PUBLICATION_STYLES = {
     logoColor: "#FFFFFF",
     style: "broadsheet",
   },
+  economist: {
+    key: "economist",
+    name: "The Economist",
+    fontFamily: "'Georgia', 'Times New Roman', serif",
+    headlineFont: "'Georgia', 'Times New Roman', serif",
+    bg: "#FFFFFF",
+    fg: "#1A1A1A",
+    accent: "#E3120B",
+    border: "#E3120B",
+    logoBg: "#E3120B",
+    logoColor: "#FFFFFF",
+    style: "broadsheet",
+  },
+  politico: {
+    key: "politico",
+    name: "Politico",
+    fontFamily: "'Helvetica Neue', 'Arial', sans-serif",
+    headlineFont: "'Helvetica Neue', 'Arial', sans-serif",
+    bg: "#FFFFFF",
+    fg: "#1A1A1A",
+    accent: "#C8102E",
+    border: "#D9D9D9",
+    logoBg: "#C8102E",
+    logoColor: "#FFFFFF",
+    style: "broadcaster",
+  },
+  spectator: {
+    key: "spectator",
+    name: "The Spectator",
+    fontFamily: "'Georgia', serif",
+    headlineFont: "'Georgia', serif",
+    bg: "#FBF8F1",
+    fg: "#1A1A1A",
+    accent: "#0B1F3A",
+    border: "#D8CFBB",
+    logoBg: "#0B1F3A",
+    logoColor: "#FFFFFF",
+    style: "broadsheet",
+  },
+  derspiegel: {
+    key: "derspiegel",
+    name: "Der Spiegel",
+    fontFamily: "'Georgia', 'Times New Roman', serif",
+    headlineFont: "'Georgia', 'Times New Roman', serif",
+    bg: "#FFFFFF",
+    fg: "#1A1A1A",
+    accent: "#E64415",
+    border: "#E64415",
+    logoBg: "#E64415",
+    logoColor: "#FFFFFF",
+    style: "broadsheet",
+  },
+  elpais: {
+    key: "elpais",
+    name: "El Pais",
+    fontFamily: "'Georgia', 'Times New Roman', serif",
+    headlineFont: "'Georgia', 'Times New Roman', serif",
+    bg: "#FFFFFF",
+    fg: "#1A1A1A",
+    accent: "#0066B3",
+    border: "#D9D9D9",
+    logoBg: "#0066B3",
+    logoColor: "#FFFFFF",
+    style: "broadsheet",
+  },
 };
 
 function matchPublication(name) {
@@ -208,6 +276,11 @@ function matchPublication(name) {
   if (lower.includes("newyorkpost") || lower.includes("nypost")) return PUBLICATION_STYLES.nypost;
   if (lower.includes("onion")) return PUBLICATION_STYLES.theonion;
   if (lower.includes("lemonde") || lower.includes("monde")) return PUBLICATION_STYLES.lemonde;
+  if (lower.includes("economist")) return PUBLICATION_STYLES.economist;
+  if (lower.includes("politico")) return PUBLICATION_STYLES.politico;
+  if (lower.includes("spectator")) return PUBLICATION_STYLES.spectator;
+  if (lower.includes("spiegel")) return PUBLICATION_STYLES.derspiegel;
+  if (lower.includes("elpais") || lower.includes("pais")) return PUBLICATION_STYLES.elpais;
 
   // Fallback: generic news card
   return {
@@ -257,7 +330,7 @@ export default function NewsCard({ article }) {
       {/* Image */}
       {article.image_url && (
         <div className="news-card__image-wrap">
-          <img src={article.image_url} alt={article.headline} className="news-card__image" />
+          <SafeImage src={article.image_url} alt={article.headline} className="news-card__image" />
         </div>
       )}
 

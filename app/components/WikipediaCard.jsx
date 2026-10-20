@@ -1,5 +1,7 @@
 "use client";
 
+import SafeImage from "./SafeImage";
+
 /**
  * WikipediaCard — Wikipedia article with infobox + lead paragraph
  */
@@ -37,7 +39,7 @@ export default function WikipediaCard({ data }) {
             {data.infobox.image_caption && (
               <div className="wiki-infobox-image-area">
                 {data.image_url ? (
-                  <img src={data.image_url} alt={data.infobox.image_caption} className="wiki-infobox-image" />
+                  <SafeImage src={data.image_url} alt={data.infobox.image_caption} className="wiki-infobox-image" />
                 ) : (
                   <div className="wiki-infobox-image-placeholder" />
                 )}

@@ -1,260 +1,92 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TimelineMosaic from "./TimelineMosaic";
-
-const LOADING_MESSAGES = [
-  "Dispatching reporters…",
-  "Interviewing sources…",
-  "Writing headlines…",
-  "Penning op-eds…",
-  "Crafting tweets…",
-  "Posting to Reddit…",
-  "Writing official statements…",
-  "Editing Wikipedia…",
-  "Googling the aftermath…",
-  "Uploading to YouTube…",
-  "Laying out the timeline…",
-];
-
-const ITEM_LABELS = {
-  articles: "articles",
-  oped: "op-eds",
-  notifications: "notifications",
-  tweets: "tweets",
-  reddit_posts: "Reddit posts",
-  facebook_post: "Facebook posts",
-  wikipedia: "Wikipedia pages",
-  google_results: "Google results",
-  youtube_videos: "YouTube videos",
-};
-
-function parseSSE(buffer) {
-  const events = [];
-  const parts = buffer.split("\n\n");
-  const rest = parts.pop();
-
-  for (const part of parts) {
-    const lines = part.split("\n");
-    let eventType = "message";
-    let data = "";
-
-    for (const line of lines) {
-      if (line.startsWith("event: ")) eventType = line.slice(7).trim();
-      else if (line.startsWith("data: ")) data = line.slice(6);
-    }
-
-    if (data) {
-      try {
-        events.push({ type: eventType, data: JSON.parse(data) });
-      } catch {}
-    }
-  }
-
-  return { events, rest };
-}
-
-function countItems(data) {
-  let count = 0;
-  if (data.articles?.length) count += data.articles.length;
-  if (data.oped) count += 1;
-  if (data.notifications?.length) count += data.notifications.length;
-  if (data.tweets?.length) count += data.tweets.length;
-  if (data.reddit_posts?.length) count += data.reddit_posts.length;
-  if (data.facebook_post) count += 1;
-  if (data.wikipedia) count += 1;
-  if (data.google_results) count += 1;
-  if (data.youtube_videos?.length) count += data.youtube_videos.length;
-  return count;
-}
+import { useGeneration, countItems, MAX_SCENARIO_LENGTH } from "./useGeneration";
 
 export default function ScenarioForm() {
+  const {
+    phase,
+    data,
+    failedSections,
+    isPending,
+    progress,
+    statusMessage,
+    fatalError,
+    submittedScenario,
+    generate,
+    retrySection,
+    reset,
+  } = useGeneration();
+
   const [scenario, setScenario] = useState("");
-  const [phase, setPhase] = useState("idle"); // idle | loading | streaming | done | error
-  const [timelineData, setTimelineData] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [partialError, setPartialError] = useState(null);
-  const [submittedScenario, setSubmittedScenario] = useState("");
-  const [statusMessage, setStatusMessage] = useState("");
-  const [progress, setProgress] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
-  const [waitTime, setWaitTime] = useState(0);
   const [showScenario, setShowScenario] = useState(false);
+  const [waitTime, setWaitTime] = useState(0);
+  const [screenshotError, setScreenshotError] = useState("");
   const timelineRef = useRef(null);
-  const abortRef = useRef(null);
-  const waitTimerRef = useRef(null);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (!scenario.trim()) return;
-
-    const input = scenario.trim();
-    setSubmittedScenario(input);
-    setPartialError(null);
-    setTimelineData(null);
-    setPhase("loading");
-    setProgress(0);
-    setWaitTime(0);
-    setStatusMessage("Starting…");
-
-    // Tick up the wait timer so the user sees elapsed time
-    waitTimerRef.current = setInterval(() => {
-      setWaitTime((prev) => prev + 1);
-    }, 1000);
-
-    // Spin loading messages during initial phase
-    let msgIndex = 0;
-    const msgInterval = setInterval(() => {
-      msgIndex = (msgIndex + 1) % LOADING_MESSAGES.length;
-      setLoadingMsg(LOADING_MESSAGES[msgIndex]);
-    }, 2500);
-
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenario: input }),
-        signal: controller.signal,
-      });
-
-      if (!res.ok) {
-        let errMsg = `Server error (${res.status})`;
-        try {
-          const errData = await res.json();
-          errMsg = errData.error || errMsg;
-        } catch {}
-        throw new Error(errMsg);
-      }
-
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("No response stream available");
-
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let accumulated = {
-        articles: [],
-        oped: null,
-        notifications: [],
-        tweets: [],
-        reddit_posts: [],
-        facebook_post: null,
-        wikipedia: null,
-        google_results: null,
-        youtube_videos: [],
-        image_urls: [],
-      };
-
-      // Stop the rotating messages — we'll use SSE status messages now
-      clearInterval(msgInterval);
-
-      // First event received — stop the wait counter
-      clearInterval(waitTimerRef.current);
+  // Elapsed-time counter for the loading/streaming states.
+  useEffect(() => {
+    if (phase !== "loading" && phase !== "streaming") {
       setWaitTime(0);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const { events, rest } = parseSSE(buffer);
-        buffer = rest;
-
-        for (const event of events) {
-          switch (event.type) {
-            case "status": {
-              setStatusMessage(event.data.message || "");
-              setProgress(event.data.progress || 0);
-              break;
-            }
-            case "data": {
-              accumulated = { ...accumulated, ...event.data };
-              setTimelineData({ ...accumulated });
-
-              // If we have articles (the core content), switch to streaming view
-              if (accumulated.articles?.length > 0 || accumulated.tweets?.length > 0) {
-                setPhase("streaming");
-              }
-              break;
-            }
-            case "error": {
-              setPartialError(event.data.message);
-              break;
-            }
-            case "fatal_error": {
-              throw new Error(event.data.message);
-            }
-            case "heartbeat": {
-              // Server is alive — just ignore the keepalive
-              break;
-            }
-            case "done": {
-              setTimelineData({ ...accumulated });
-              setPhase("done");
-              break;
-            }
-          }
-        }
-      }
-    } catch (err) {
-      if (err.name === "AbortError") return;
-      clearInterval(waitTimerRef.current);
-      console.error("[ScenarioForm] Generation failed:", err.message);
-      setErrorMessage(err.message);
-      if (phase === "streaming" || (timelineData && (timelineData.articles?.length > 0 || timelineData.tweets?.length > 0))) {
-        setPartialError(err.message);
-      } else {
-        setPhase("error");
-      }
-    } finally {
-      clearInterval(msgInterval);
-      clearInterval(waitTimerRef.current);
-      abortRef.current = null;
+      return undefined;
     }
+
+    const startedAt = Date.now();
+    const id = setInterval(() => setWaitTime(Math.round((Date.now() - startedAt) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [phase]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const value = scenario.trim();
+    if (!value) return;
+    setScreenshotError("");
+    setShowScenario(false);
+    generate(value);
   }
 
   function handleReset() {
-    abortRef.current?.abort();
-    clearInterval(waitTimerRef.current);
-    setPhase("idle");
+    reset();
     setScenario("");
-    setTimelineData(null);
-    setErrorMessage("");
-    setPartialError(null);
-    setSubmittedScenario("");
-    setStatusMessage("");
-    setProgress(0);
-    setWaitTime(0);
+    setScreenshotError("");
+    setShowScenario(false);
+  }
+
+  async function retryAllFailed() {
+    setScreenshotError("");
+    for (const section of failedSections) {
+      // Sequential so the reference retry can reuse refreshed headlines.
+      await retrySection(section.name);
+    }
   }
 
   const handleScreenshot = useCallback(async () => {
     if (!timelineRef.current) return;
+
+    setScreenshotError("");
+
     try {
       const html2canvas = (await import("html2canvas-pro")).default;
       const canvas = await html2canvas(timelineRef.current, {
         backgroundColor: darkMode ? "#15202B" : "#F0F2F5",
         scale: 2,
         useCORS: true,
-        allowTaint: true,
+        // Tainting the canvas makes toDataURL throw; skip CORS-blocked images instead.
+        allowTaint: false,
+        imageTimeout: 15000,
         logging: false,
       });
       const link = document.createElement("a");
-      link.download = `allegedly-${submittedScenario.slice(0, 30).replace(/[^a-z0-9]/gi, "-")}.png`;
+      link.download = `allegedly-${submittedScenario.slice(0, 30).replace(/[^a-z0-9]/gi, "-") || "timeline"}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {
       console.error("Screenshot failed:", err);
-      alert("Screenshot failed. Try again.");
+      setScreenshotError("Screenshot failed — some images may not allow embedding. You can still screenshot the page manually.");
     }
   }, [darkMode, submittedScenario]);
-
-  function itemCount() {
-    if (!timelineData) return 0;
-    return countItems(timelineData);
-  }
 
   // ---- IDLE ----
   if (phase === "idle") {
@@ -281,6 +113,8 @@ export default function ScenarioForm() {
                 if (scenario.trim()) handleSubmit(e);
               }
             }}
+            maxLength={MAX_SCENARIO_LENGTH}
+            aria-describedby="scenario-hint"
             placeholder="If Jeremy Corbyn won in 2017..."
             autoFocus
             rows={1}
@@ -289,6 +123,12 @@ export default function ScenarioForm() {
             Generate Timeline
           </button>
         </form>
+        <p id="scenario-hint" className="scenario-hint">
+          <span className={scenario.length >= MAX_SCENARIO_LENGTH ? "scenario-hint__count--limit" : undefined}>
+            {scenario.length}/{MAX_SCENARIO_LENGTH}
+          </span>{" "}
+          characters · Enter to generate, Shift+Enter for a new line
+        </p>
       </div>
     );
   }
@@ -301,27 +141,39 @@ export default function ScenarioForm() {
         <div className="loading-bar-track">
           <div className="loading-bar-fill" style={{ width: `${Math.min(progress, 60)}%` }} />
         </div>
-        <p className="loading-text">{statusMessage || loadingMsg}</p>
+        <p className="loading-text" role="status" aria-live="polite">
+          {statusMessage || "Starting…"}
+        </p>
         {waitTime > 15 && (
           <p className="loading-warning">
             Taking longer than expected&hellip; ({waitTime}s)
-            {waitTime > 40 && <span> The server may be under load. Still working&hellip;</span>}
+            {waitTime > 40 && <span> The model is under load. Still working&hellip;</span>}
           </p>
         )}
         <p className="loading-subtext">
           Generating news articles, op-eds, statements, tweets, Reddit threads,
           Wikipedia entries, and YouTube videos for &ldquo;{submittedScenario}&rdquo;.
         </p>
+        <button onClick={handleReset} className="toolbar-btn loading-cancel">
+          Cancel
+        </button>
       </div>
     );
   }
 
-  // ---- ERROR (no data) ----
+  // ---- ERROR (nothing generated) ----
   if (phase === "error") {
     return (
-      <div className="error-banner">
+      <div className="error-banner" role="alert">
         <h3>Generation Failed</h3>
-        <p>{errorMessage}</p>
+        <p>{fatalError?.message ?? "Something went wrong while generating the timeline."}</p>
+        {fatalError?.hint && <p className="error-banner__hint">{fatalError.hint}</p>}
+        {fatalError?.raw && (
+          <details className="error-banner__details">
+            <summary>Technical details</summary>
+            <code>{fatalError.raw}</code>
+          </details>
+        )}
         <button onClick={handleReset} id="try-again-btn">
           Try Again
         </button>
@@ -330,7 +182,8 @@ export default function ScenarioForm() {
   }
 
   // ---- STREAMING + DONE: show timeline ----
-  const isStreaming = phase === "streaming";
+  const isStreaming = phase === "streaming" || isPending;
+  const hasFailed = failedSections.length > 0;
 
   return (
     <div className={darkMode ? "timeline-wrapper dark-mode" : "timeline-wrapper"}>
@@ -344,19 +197,11 @@ export default function ScenarioForm() {
             />
           </div>
           <div className="streaming-info">
-            <span className="streaming-status">{statusMessage}</span>
-            <span className="streaming-count">{itemCount()} items generated</span>
+            <span className="streaming-status" role="status" aria-live="polite">
+              {statusMessage || "Finishing up…"}
+            </span>
+            <span className="streaming-count">{countItems(data)} items generated</span>
           </div>
-          {partialError && (
-            <div className="streaming-error">{partialError}</div>
-          )}
-        </div>
-      )}
-
-      {/* Partial error banner during streaming */}
-      {!isStreaming && partialError && (
-        <div className="streaming-error streaming-error--banner">
-          {partialError}
         </div>
       )}
 
@@ -399,7 +244,12 @@ export default function ScenarioForm() {
               </svg>
             )}
           </button>
-          <button onClick={handleScreenshot} className="toolbar-btn" title="Download as image" disabled={isStreaming}>
+          <button
+            onClick={handleScreenshot}
+            className="toolbar-btn"
+            title="Download as image"
+            disabled={isStreaming}
+          >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
               <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" />
             </svg>
@@ -410,9 +260,61 @@ export default function ScenarioForm() {
         </div>
       </div>
 
+      {/* Section failures — keep whatever succeeded, offer targeted retries */}
+      {hasFailed && (
+        <div className="section-errors" role="alert">
+          <div className="section-errors__head">
+            <span>
+              {failedSections.length === 1
+                ? "One section failed. The rest of the timeline is still here."
+                : `${failedSections.length} sections failed. The rest of the timeline is still here.`}
+            </span>
+            {failedSections.length > 1 && (
+              <button onClick={retryAllFailed} disabled={isPending} className="section-errors__retry-all">
+                Retry all
+              </button>
+            )}
+          </div>
+          <ul className="section-errors__list">
+            {failedSections.map((section) => (
+              <li key={section.name} className="section-error">
+                <div className="section-error__text">
+                  <strong>{section.label}</strong>
+                  <p>{section.message}</p>
+                  {section.hint && <p className="section-error__hint">{section.hint}</p>}
+                  {section.raw && (
+                    <details className="section-error__details">
+                      <summary>Technical details</summary>
+                      <code>{section.raw}</code>
+                    </details>
+                  )}
+                </div>
+                <button
+                  onClick={() => retrySection(section.name)}
+                  disabled={isPending}
+                  className="section-error__retry"
+                >
+                  Retry
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {screenshotError && (
+        <div className="streaming-error streaming-error--banner" role="status">
+          {screenshotError}
+        </div>
+      )}
+
       {/* Timeline content */}
       <div ref={timelineRef} className="timeline-content">
-        <TimelineMosaic data={timelineData} />
+        {data ? (
+          <TimelineMosaic data={data} />
+        ) : (
+          <p className="timeline-empty">Waiting for the first section…</p>
+        )}
       </div>
     </div>
   );
